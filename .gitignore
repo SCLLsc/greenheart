@@ -1,0 +1,13 @@
+# Project exclude paths
+/greenheart_collect/target/
+/greenheart_common/target/
+/greenheart_dm/target/
+/greenheart_eureka/target/
+/greenheart_naam/target/
+/greenheart_pc/target/
+/greenheart_pe/target/
+/greenheart_pim/target/
+/greenheart_process/target/
+/greenheart_ud/target/
+/greenheart_um/target/
+/greenheart_user/target/
