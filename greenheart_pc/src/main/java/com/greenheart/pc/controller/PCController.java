@@ -24,9 +24,9 @@ public class PCController {
     private ReplyService replyService;
 
     //心理咨询
-    @PostMapping("/pc/consult/")
-    public JsonResult consult(@RequestBody Guidance guidance){
-        if(guidanceService.consult(guidance)){
+    @PostMapping("/pc/consult/{userId}/{guidanceContent}")
+    public JsonResult consult(@PathVariable Integer userId,@PathVariable String guidanceContent){
+        if(guidanceService.consult(userId,guidanceContent)){
             return new JsonResult(true, StatusCode.SUCESS,"咨询成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"咨询失败");
@@ -39,9 +39,29 @@ public class PCController {
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",reply);
     }
     //查看咨询(待回复|已回复)
-    @PostMapping("/pc/viewconsultation/{userId}/{guidanceStatus}/{pageNum}")
-    public JsonResult viewConsultation(@PathVariable Integer userId,@PathVariable Integer guidanceStatus,@PathVariable Integer pageNum){
-        List<Guidance> guidances= guidanceService.viewConsultation(userId, guidanceStatus, pageNum);
+    @PostMapping("/pc/viewconsultation/{userId}/{guidanceStatus}/")
+    public JsonResult viewConsultation(@PathVariable Integer userId,@PathVariable Integer guidanceStatus){
+        List<Guidance> guidances= guidanceService.viewConsultation(userId, guidanceStatus);
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",guidances);
+    }
+    //取消咨询
+    @PostMapping("/pc/removeguidance/{guidanceId}")
+    public JsonResult removeGuidance(@PathVariable Integer guidanceId){
+        boolean flag=guidanceService.removeById(guidanceId);
+        if(flag){
+            return new JsonResult(true, StatusCode.SUCESS,"取消成功");
+        }else {
+            return new JsonResult(false, StatusCode.ERROR,"取消失败");
+        }
+    }
+    //删除已回复的咨询
+    @PostMapping("/pc/deleteguidance/{guidanceId}/")
+    public JsonResult delGuidance(@PathVariable Integer guidanceId){
+        boolean flag=guidanceService.delGuidance(guidanceId);
+        if(flag){
+            return new JsonResult(true, StatusCode.SUCESS,"取消成功");
+        }else {
+            return new JsonResult(false, StatusCode.ERROR,"取消失败");
+        }
     }
 }

@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.greenheart.um.dao.*;
-import com.greenheart.um.pojo.Collect;
-import com.greenheart.um.pojo.Guidance;
-import com.greenheart.um.pojo.Information;
-import com.greenheart.um.pojo.Reply;
+import com.greenheart.um.pojo.*;
 import com.greenheart.um.service.ReplyService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -30,15 +27,18 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
     private PictureMapper pictureMapper;
     private ReplyMapper replyMapper;
 
+    //查看所有用户
+    public List<User> viewAllUser(){
+        QueryWrapper qw=new QueryWrapper();
+        qw.eq("role",0);
+        List<User> users=userMapper.selectList(qw);
+        return users;
+    }
     //查看咨询
-    public List<Guidance> viewConsultation(Integer guidanceStatus,Integer pageNum){
+    public List<Guidance> viewConsultation(Integer guidanceStatus){
         QueryWrapper qw=new QueryWrapper();
         qw.eq("guidance_status", guidanceStatus);
-        Page<Guidance> page=new Page<>(pageNum,3);
-        List<Guidance> guidances=guidanceMapper.selectPage(page,qw).getRecords();
-        long total=page.getTotal();
-        long current=page.getCurrent();
-        long pages=page.getPages();
+        List<Guidance> guidances=guidanceMapper.selectList(qw);
         return guidances;
     }
     //查看单个咨询未回复内容
@@ -47,15 +47,13 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
         return guidance;
     }
     //心理咨询回复
-    public boolean pcReply(Reply pcReply){
-        QueryWrapper qw=new QueryWrapper();
-        qw.eq("guidance_id",pcReply.getGuidanceId());
-        Guidance guidance=guidanceMapper.selectOne(qw);
-        guidance.setGuidanceStatus(2);
+    public boolean pcReply(Integer guidanceId,String replyContent){
+        Guidance guidance=guidanceMapper.selectById(guidanceId);
+        guidance.setGuidanceStatus(1);
         int r1=guidanceMapper.updateById(guidance);
         Reply reply=new Reply();
-        reply.setGuidanceId(pcReply.getGuidanceId());
-        reply.setReplyContent(pcReply.getReplyContent());
+        reply.setGuidanceId(guidanceId);
+        reply.setReplyContent(replyContent);
         reply.setReplyDate(new Date());
         int r2=replyMapper.insert(reply);
         if(r1!=0&&r2!=0){

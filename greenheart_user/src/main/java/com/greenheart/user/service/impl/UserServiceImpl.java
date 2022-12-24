@@ -52,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
        MD5Util md5=new MD5Util();
        User user = query().eq("email", email).one();
        if(user!=null){
-           String decryptPwd =md5.convertMD5(md5.convertMD5(user.getUserPwd()));//MD5解密
+           String decryptPwd =md5.convertMD5(user.getUserPwd());//MD5解密
            if(decryptPwd.equals(userPwd)){
                result.setFirst(user);
                result.setSecond("登陆成功");

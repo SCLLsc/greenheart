@@ -32,13 +32,11 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
     private PictureMapper pictureMapper;
 
     // 查看上传的资料
-    public ObjectAndString<List<Information>,List<Picture>> myInformation(String userId,Integer informationStatus,Integer pageNum){
-        Page<Information> page=new Page<>(pageNum,3);
+    public ObjectAndString<List<Information>,List<Picture>> myInformation(String userId,Integer informationStatus){
         QueryWrapper qw=new QueryWrapper();
         qw.eq("user_id",userId);
         qw.eq("information_Status",informationStatus);
-        informationMapper.selectPage(page,qw);
-        List<Information> informations=page.getRecords();
+        List<Information> informations=informationMapper.selectList(qw);
         List<Picture> pPaths=new ArrayList();
         ObjectAndString<List<Information>,List<Picture>> result=new ObjectAndString<>();
         for(Information information:informations){

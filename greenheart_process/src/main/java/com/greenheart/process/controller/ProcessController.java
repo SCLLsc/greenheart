@@ -33,9 +33,9 @@ public class ProcessController {
     @PostMapping("/process/{informationId}/{process}/")
     public JsonResult process(@PathVariable Integer informationId,@PathVariable Integer process){
         if(informationService.process(informationId,process)){
-            return new JsonResult(true, StatusCode.SUCESS,"审核通过");
+            return new JsonResult(true, StatusCode.SUCESS,"审核完成：通过");
         }else {
-            return new JsonResult(false, StatusCode.ERROR,"审核未通过");
+            return new JsonResult(true, StatusCode.SUCESS,"审核完成：未通过");
         }
     }
 }

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MarkService extends IService<Mark> {
-    default List<Mark> viewScore(Integer userId,Integer pageNum){return null;}
+    default List<Mark> viewScore(Integer userId){return null;}
 }

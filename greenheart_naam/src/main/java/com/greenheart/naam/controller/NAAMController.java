@@ -18,7 +18,7 @@ public class NAAMController {
     private NoticeService noticeService;
 
     //查看公告
-    @GetMapping("/naam/allnotice/")
+    @PostMapping("/naam/allnotice/")
     public JsonResult allNotice(){
         List<Notice> notices= noticeService.allNotice();
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",notices);
@@ -31,9 +31,9 @@ public class NAAMController {
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",notice);
     }
     //新增公告
-    @PostMapping("/naam/addnotice/")
-    public JsonResult addNotice(@RequestBody Notice notice){
-        if(noticeService.addNotice(notice)){
+    @PostMapping("/naam/addnotice/{noticeTitle}/{noticeContent}/")
+    public JsonResult addNotice(@PathVariable String noticeTitle,@PathVariable String noticeContent){
+        if(noticeService.addNotice(noticeTitle,noticeContent)){
             return new JsonResult(true, StatusCode.SUCESS,"添加成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"添加失败");
@@ -42,9 +42,9 @@ public class NAAMController {
     }
 
     //修改公告
-    @PutMapping("/naam/updatenotice/")
-    public JsonResult updateNotice(@RequestBody Notice notice){
-        if(noticeService.updateNotice(notice)){
+    @PostMapping("/naam/updatenotice/{noticeId}/{noticeTitle}/{noticeContent}/")
+    public JsonResult updateNotice(@PathVariable Integer noticeId,@PathVariable String noticeTitle,@PathVariable String noticeContent){
+        if(noticeService.updateNotice(noticeId,noticeTitle,noticeContent)){
             return new JsonResult(true, StatusCode.SUCESS,"修改成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"修改失败");
@@ -52,9 +52,9 @@ public class NAAMController {
     }
 
     //删除公告
-    @DeleteMapping("/naam/removenotice/")
-    public JsonResult removeNotice(@RequestBody Notice notice){
-        if(noticeService.removeById(notice.getNoticeId())){
+    @PostMapping("/naam/removenotice/{noticeId}/")
+    public JsonResult removeNotice(@PathVariable Integer noticeId){
+        if(noticeService.removeById(noticeId)){
             return new JsonResult(true, StatusCode.SUCESS,"删除成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"删除失败");

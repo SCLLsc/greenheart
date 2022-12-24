@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public interface InformationService extends IService<Information> {
-   default ObjectAndString<List<Information>,List<Picture>> myInformation(String userId,Integer informationStatus, Integer pageNum){return null;}
+   default ObjectAndString<List<Information>,List<Picture>> myInformation(String userId,Integer informationStatus){return null;}
 
    default boolean removeInformation(String informationId){return false;}
 }

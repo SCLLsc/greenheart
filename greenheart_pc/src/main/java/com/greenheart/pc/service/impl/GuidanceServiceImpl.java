@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.greenheart.pc.dao.GuidanceMapper;
+import com.greenheart.pc.dao.ReplyMapper;
 import com.greenheart.pc.pojo.Guidance;
 import com.greenheart.pc.service.GuidanceService;
 import lombok.Setter;
@@ -20,9 +21,13 @@ import java.util.List;
 @Setter(onMethod_={@Resource} )
 public class GuidanceServiceImpl extends ServiceImpl<GuidanceMapper, Guidance> implements GuidanceService {
     private GuidanceMapper guidanceMapper;
+    private ReplyMapper replyMapper;
 
     //心理咨询
-    public boolean consult(Guidance guidance){
+    public boolean consult(Integer userId,String guidanceContent){
+        Guidance guidance=new Guidance();
+        guidance.setUserId(userId);
+        guidance.setGuidanceContent(guidanceContent);
         guidance.setGuidanceDate(new Date());
         guidance.setGuidanceStatus(0);
         int result=guidanceMapper.insert(guidance);
@@ -34,18 +39,26 @@ public class GuidanceServiceImpl extends ServiceImpl<GuidanceMapper, Guidance> i
     }
 
     //查看咨询
-    public List<Guidance> viewConsultation(Integer userId,Integer guidanceStatus,Integer pageNum){
+    public List<Guidance> viewConsultation(Integer userId,Integer guidanceStatus){
         HashMap<String, Object> map = new HashMap<>();
         map.put("user_id",userId);
         map.put("guidance_status", guidanceStatus);
         QueryWrapper qw=new QueryWrapper();
         qw.allEq(map,false);
-        Page<Guidance> page=new Page<>(pageNum,3);
-        List<Guidance> guidances=guidanceMapper.selectPage(page,qw).getRecords();
-        long total=page.getTotal();
-        long current=page.getCurrent();
-        long pages=page.getPages();
+        List<Guidance> guidances=guidanceMapper.selectList(qw);
        return guidances;
+    }
+    //删除已回复的咨询
+    public boolean delGuidance(Integer guidanceId){
+        QueryWrapper qw=new QueryWrapper();
+        qw.eq("guidance_id",guidanceId);
+        int r1=guidanceMapper.deleteById(guidanceId);
+        int r2=replyMapper.delete(qw);
+        if(r1!=0&&r2!=0){
+            return true;
+        }else {
+            return false;
+        }
     }
 
 }

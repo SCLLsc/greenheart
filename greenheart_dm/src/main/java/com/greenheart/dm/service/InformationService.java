@@ -20,4 +20,5 @@ public interface InformationService extends IService<Information> {
     default ObjectAndString<Information, Picture> informationId(Integer informationId) {
         return null;
     }
+
 }

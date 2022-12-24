@@ -30,9 +30,20 @@ public class PEController {
         return new JsonResult(true, StatusCode.SUCESS,"完成测试");
     }
     //查看成绩
-    @PostMapping("pe/viewscore/{userId}/{pageNum}/")
-    public JsonResult viewScore(@PathVariable Integer userId,@PathVariable Integer pageNum){
-        List<Mark> marks= markService.viewScore(userId, pageNum);
+    @PostMapping("pe/viewscore/{userId}/")
+    public JsonResult viewScore(@PathVariable Integer userId){
+        List<Mark> marks= markService.viewScore(userId);
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",marks);
+    }
+    //删除成绩
+    @PostMapping("pe/delscore/{markId}/")
+    public JsonResult delScore(@PathVariable Integer markId){
+        boolean flag= markService.removeById(markId);
+        if(flag){
+            return new JsonResult(true, StatusCode.SUCESS,"删除成功");
+        }else {
+            return new JsonResult(true, StatusCode.SUCESS,"删除失败");
+        }
+
     }
 }

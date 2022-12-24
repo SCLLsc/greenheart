@@ -6,7 +6,7 @@ import com.greenheart.dm.pojo.Trial;
 import java.util.List;
 
 public interface TrialService extends IService<Trial> {
-    default List<Trial> selectAllTrial(Integer pageNum){return null;}
+    default List<Trial> selectAllTrial(){return null;}
 
     default boolean addTrial(List<Trial> trial){return false;}
 

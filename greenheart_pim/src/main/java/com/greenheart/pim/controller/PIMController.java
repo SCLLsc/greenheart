@@ -37,19 +37,27 @@ public class PIMController {
         }
     }
     // 修改个人信息
-    @PostMapping("/pim/updatemyself/")
-    public JsonResult updateMyself(@RequestBody User user){
-        if(userService.updateMyself(user)){
+    @PostMapping("/pim/updatemyself/{userId}/{userName}/{email}/")
+    public JsonResult updateMyself(@PathVariable Integer userId,@PathVariable String userName,@PathVariable String email){
+        if(userService.updateMyself(userId,userName,email)){
             return new JsonResult(true, StatusCode.SUCESS,"修改成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"修改失败");
         }
     }
-
+    // 修改密码
+    @PostMapping("/pim/updatemypwd/{userId}/{userPwd}/")
+    public JsonResult updateMyPwd(@PathVariable Integer userId,@PathVariable String userPwd){
+        if(userService.updateMyPwd(userId,userPwd)){
+            return new JsonResult(true, StatusCode.SUCESS,"修改成功");
+        }else{
+            return new JsonResult(false, StatusCode.ERROR,"修改失败");
+        }
+    }
     // 查看上传的资料
-    @PostMapping("/pim/allinformation/{userId}/{informationStatus}/{pageNum}/")
-    public JsonResult myInformation(@PathVariable String userId,@PathVariable Integer informationStatus,@PathVariable Integer pageNum){
-        ObjectAndString<List<Information>,List<Picture>> informations=informationService.myInformation(userId,informationStatus,pageNum);
+    @PostMapping("/pim/allinformation/{userId}/{informationStatus}/")
+    public JsonResult myInformation(@PathVariable String userId,@PathVariable Integer informationStatus){
+        ObjectAndString<List<Information>,List<Picture>> informations=informationService.myInformation(userId,informationStatus);
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",informations);
     }
 

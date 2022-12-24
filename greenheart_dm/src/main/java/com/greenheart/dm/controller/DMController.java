@@ -35,9 +35,9 @@ public class DMController {
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",informations);
     }
     //查看心理评测
-    @PostMapping("/dm/selectalltrial/{pageNum}/")
-    public JsonResult selectAllTrial(@PathVariable Integer pageNum){
-        List<Trial> trials=trialService.selectAllTrial(pageNum);
+    @PostMapping("/dm/selectalltrial/")
+    public JsonResult selectAllTrial(){
+        List<Trial> trials=trialService.selectAllTrial();
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",trials);
     }
     //查看心理评测试题

@@ -1,7 +1,10 @@
 package com.greenheart.collect.controller;
 
 import com.greenheart.collect.pojo.Collect;
+import com.greenheart.collect.pojo.Information;
+import com.greenheart.collect.pojo.Picture;
 import com.greenheart.collect.service.CollectService;
+import com.greenheart.collect.util.ObjectAndString;
 import entity.JsonResult;
 import entity.StatusCode;
 import lombok.Setter;
@@ -21,9 +24,9 @@ public class CollectController {
     private CollectService collectService;
 
     //查看收藏
-    @PostMapping("/collect/{userId}/{pageNum}/")
-    public JsonResult selectAllCollect(@PathVariable Integer userId,@PathVariable Integer pageNum){
-        List<Collect> collects= collectService.selectAllCollect(userId, pageNum);
+    @PostMapping("/collect/{userId}/")
+    public JsonResult selectAllCollect(@PathVariable Integer userId){
+        ObjectAndString<List<Information>,List<Picture>> collects= collectService.selectAllCollect(userId);
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",collects);
     }
     //收藏资料
@@ -36,10 +39,10 @@ public class CollectController {
         }
     }
     //取消收藏
-    @PostMapping("/collect/removecollect/{collectId}/")
-    public JsonResult removeById(@PathVariable String collectId){
-        Integer collectId1=Integer.valueOf(collectId);
-        if(collectService.removeById(collectId1)){
+    @PostMapping("/collect/removecollect/{userId}/{informationId}/")
+    public JsonResult removeById(@PathVariable Integer userId,@PathVariable Integer informationId){
+        boolean flag=collectService.removeCollect(userId, informationId);
+        if(flag){
             return new JsonResult(true, StatusCode.SUCESS,"取消成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"取消失败");

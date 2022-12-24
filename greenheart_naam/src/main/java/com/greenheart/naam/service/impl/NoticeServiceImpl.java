@@ -25,8 +25,12 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
         return notices;
     }
     //新增公告
-    public boolean addNotice(Notice notice){
+    public boolean addNotice(String noticeTitle,String noticeContent){
+        Notice notice=new Notice();
         notice.setCreationTime(new Date());
+        notice.setUpdateTime(new Date());
+        notice.setNoticeContent(noticeContent);
+        notice.setNoticeTitle(noticeTitle);
         int result=noticeMapper.insert(notice);
         if(result!=0){
             return true;
@@ -36,7 +40,10 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     }
 
     //修改公告
-    public boolean updateNotice(Notice notice){
+    public boolean updateNotice(Integer noticeId,String noticeTitle,String noticeContent){
+        Notice notice=noticeMapper.selectById(noticeId);
+        notice.setNoticeContent(noticeContent);
+        notice.setNoticeTitle(noticeTitle);
         notice.setUpdateTime(new Date());
         int result=noticeMapper.updateById(notice);
         if(result!=0){

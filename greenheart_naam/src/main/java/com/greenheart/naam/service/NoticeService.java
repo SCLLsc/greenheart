@@ -9,9 +9,8 @@ import java.util.List;
 public interface NoticeService extends IService<Notice> {
     default List<Notice> allNotice(){return null;}
 
-    default boolean addNotice(Notice notice){return false;}
+    default boolean addNotice(String noticeTitle,String noticeContent){return false;}
 
-    default boolean updateNotice(Notice notice){return false;}
+    default boolean updateNotice(Integer noticeId,String noticeTitle,String noticeContent){return false;}
 
-    default boolean removeNotice(Integer noticeId){return false;}
 }

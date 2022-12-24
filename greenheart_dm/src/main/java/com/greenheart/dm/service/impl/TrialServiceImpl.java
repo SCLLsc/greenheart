@@ -24,12 +24,10 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
     private TrialMapper trialMapper;
 
     //查看心理评测
-     public List<Trial> selectAllTrial(Integer pageNum){
-         Page<Trial> page=new Page<>(pageNum,10);
+     public List<Trial> selectAllTrial(){
          QueryWrapper<Trial> qw=new QueryWrapper();
          qw.groupBy("trial_title");
-         trialMapper.selectPage(page,qw);
-         List<Trial> trials=page.getRecords();
+         List<Trial> trials=trialMapper.selectList(qw);
          return trials;
      }
     //查看评测内题目

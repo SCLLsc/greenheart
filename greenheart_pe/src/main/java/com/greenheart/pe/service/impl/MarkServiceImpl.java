@@ -20,15 +20,10 @@ public class MarkServiceImpl extends ServiceImpl<MarkMapper, Mark> implements Ma
     private MarkMapper markMapper;
 
     //查看成绩
-    public List<Mark> viewScore(Integer userId,Integer pageNum){
+    public List<Mark> viewScore(Integer userId){
         QueryWrapper qw=new QueryWrapper();
         qw.eq("user_id",userId);
-        Page<Mark> page=new Page<>(pageNum,3);
-        markMapper.selectPage(page,qw);
-        List<Mark> marks=page.getRecords();
-        long total=page.getTotal();
-        long current=page.getCurrent();
-        long pages=page.getPages();
+        List<Mark> marks=markMapper.selectList(qw);
         return marks;
     }
 
