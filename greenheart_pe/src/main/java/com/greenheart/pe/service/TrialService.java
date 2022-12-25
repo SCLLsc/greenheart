@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TrialService extends IService<Trial> {
-    default boolean evaluating(Integer userId,String trialTitle,List<String> answers){return false;}
+    default boolean evaluating(Integer userId,String trialTitle,Integer markScore){return false;}
 }

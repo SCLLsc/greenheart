@@ -24,10 +24,14 @@ public class PEController {
     private MarkService markService;
 
     //心理评测
-    @PostMapping("/pe/evaluating/{userId}/{trialTitle}/")
-    public JsonResult evaluating(@PathVariable Integer userId,@PathVariable String trialTitle, @RequestBody List<String> answers){
-        trialService.evaluating(userId,trialTitle,answers);
-        return new JsonResult(true, StatusCode.SUCESS,"完成测试");
+    @PostMapping("/pe/evaluating/{userId}/{trialTitle}/{markScore}/")
+    public JsonResult evaluating(@PathVariable Integer userId,@PathVariable String trialTitle, @PathVariable Integer markScore){
+        boolean flag=trialService.evaluating(userId,trialTitle,markScore);
+        if(flag){
+            return new JsonResult(true, StatusCode.SUCESS,"完成测试");
+        }else {
+            return new JsonResult(false, StatusCode.ERROR,"测试失败");
+        }
     }
     //查看成绩
     @PostMapping("pe/viewscore/{userId}/")

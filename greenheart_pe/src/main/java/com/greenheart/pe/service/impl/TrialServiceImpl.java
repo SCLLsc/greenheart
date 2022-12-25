@@ -23,28 +23,27 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
     private TrialMapper trialMapper;
 
     //心理评测
-    public boolean evaluating(Integer userId,String trialTitle,List<String> answers){
-        Integer result=0;
-        QueryWrapper qw=new QueryWrapper();
-        qw.eq("trial_title",trialTitle);
-        List<Trial> trials=trialMapper.selectList(qw);
-//        System.out.println("题目"+trials);
-//        System.out.println("答案"+answers);
-//        System.out.println(answers.get(1).getClass());
-//        System.out.println(trials.get(1).getTrialAnswer().getClass());
-        for(int i=0;i<answers.size();i++){
-            if(answers.get(i).equals(trials.get(i).getTrialAnswer())){
-                result+=trials.get(i).getTrialScore();
-            }
-        }
-        //System.out.println("得分"+result);
+    public boolean evaluating(Integer userId,String trialTitle,Integer markScore){
+//        Integer result=0;
+//        QueryWrapper qw=new QueryWrapper();
+//        qw.eq("trial_title",trialTitle);
+//        List<Trial> trials=trialMapper.selectList(qw);
+//        for(int i=0;i<answers.size();i++){
+//            if(answers.get(i).equals(trials.get(i).getTrialAnswer())){
+//                result+=trials.get(i).getTrialScore();
+//            }
+//        }
         Mark mark=new Mark();
         mark.setMarkDate(new Date());
-        mark.setMarkScore(result);
+        mark.setMarkScore(markScore);
         mark.setTrialTitle(trialTitle);
         mark.setUserId(userId);
-        markMapper.insert(mark);
-        return true;
+        int result=markMapper.insert(mark);
+        if(result!=0){
+            return true;
+        }else {
+            return false;
+        }
     }
 
 }
