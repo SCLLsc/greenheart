@@ -7,17 +7,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="greenheart_pe" />
-        <module name="greenheart_common" />
         <module name="greenheart_eureka" />
-        <module name="greenheart_pim" />
         <module name="greenheart_dm" />
-        <module name="greenheart_um" />
-        <module name="greenheart_collect" />
         <module name="greenheart_ud" />
         <module name="greenheart_user" />
-        <module name="greenheart_naam" />
         <module name="greenheart_pc" />
+        <module name="greenheart_pe" />
+        <module name="greenheart_common" />
+        <module name="greenheart_pim" />
+        <module name="greenheart_web" />
+        <module name="greenheart_um" />
+        <module name="greenheart_collect" />
+        <module name="greenheart_manager" />
+        <module name="greenheart_naam" />
         <module name="greenheart_process" />
       </profile>
     </annotationProcessing>
@@ -28,6 +30,7 @@
       <module name="greenheart_common" options="-parameters" />
       <module name="greenheart_dm" options="-parameters" />
       <module name="greenheart_eureka" options="-parameters" />
+      <module name="greenheart_manager" options="-parameters" />
       <module name="greenheart_naam" options="-parameters" />
       <module name="greenheart_pc" options="-parameters" />
       <module name="greenheart_pe" options="-parameters" />
@@ -36,6 +39,7 @@
       <module name="greenheart_ud" options="-parameters" />
       <module name="greenheart_um" options="-parameters" />
       <module name="greenheart_user" options="-parameters" />
+      <module name="greenheart_web" options="-parameters" />
     </option>
   </component>
 </project>

@@ -29,7 +29,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
    private GuidanceMapper guidanceMapper;
    private InformationMapper informationMapper;
    private MarkMapper markMapper;
-   private PictureMapper pictureMapper;
    private ReplyMapper replyMapper;
    private TrialMapper trialMapper;
    //private StringRedisTemplate redisTemplate;
@@ -39,6 +38,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
        MD5Util md5=new MD5Util();
        String encryptPwd=md5.convertMD5(user.getUserPwd());//MD5加密
        user.setUserPwd(encryptPwd);
+       user.setRole(0);
        int result=userMapper.insert(user);
        if(result==1){
            return true;
@@ -71,7 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
        MD5Util md5=new MD5Util();
        User user=query().eq("email",email).one();
         if(user!=null){
-            String decryptPwd =md5.convertMD5(md5.convertMD5(user.getUserPwd()));//MD5解密
+            String decryptPwd =md5.convertMD5(user.getUserPwd());//MD5解密
             return decryptPwd;
         }else {
             return "该邮箱尚未注册";
@@ -110,17 +110,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
                 qw2.eq("information_id",informationId);
                 int r11=collectMapper.deleteBatchIds(cIds);
                 int r22=informationMapper.deleteById(informationId);
-                int r33=pictureMapper.delete(qw2);
             }else {
                 int r11=informationMapper.deleteById(informationId);
                 QueryWrapper qw2=new QueryWrapper();
                 qw2.eq("information_id",informationId);
-                int r33=pictureMapper.delete(qw2);
             }
         }
         int r1=collectMapper.delete(qw);//删除自己收藏的
         int r3=markMapper.delete(qw);//删除测试成绩
-        int r4=pictureMapper.delete(qw);//删除头像
         //查找所有的咨询
         List<Guidance> guidanceList=guidanceMapper.selectList(qw);
         System.out.println(guidanceList);

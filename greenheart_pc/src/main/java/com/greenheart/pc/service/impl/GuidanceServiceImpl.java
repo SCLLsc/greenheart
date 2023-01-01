@@ -7,11 +7,14 @@ import com.greenheart.pc.dao.GuidanceMapper;
 import com.greenheart.pc.dao.ReplyMapper;
 import com.greenheart.pc.pojo.Guidance;
 import com.greenheart.pc.service.GuidanceService;
+import com.greenheart.pc.util.ObjectAndString;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,14 +42,43 @@ public class GuidanceServiceImpl extends ServiceImpl<GuidanceMapper, Guidance> i
     }
 
     //查看咨询
-    public List<Guidance> viewConsultation(Integer userId,Integer guidanceStatus){
+    public ObjectAndString<List<Guidance>,Integer> viewConsultation(Integer userId,Integer guidanceStatus,Integer pageNum){
+        ObjectAndString<List<Guidance>,Integer> guidance=new ObjectAndString<>();
         HashMap<String, Object> map = new HashMap<>();
         map.put("user_id",userId);
         map.put("guidance_status", guidanceStatus);
         QueryWrapper qw=new QueryWrapper();
         qw.allEq(map,false);
+        Page<Guidance> page=new Page<>(pageNum,3);
+        guidanceMapper.selectPage(page,qw);
+        List<Guidance> guidances=page.getRecords();
+        Integer total=(int)page.getTotal();
+        guidance.setFirst(guidances);
+        guidance.setSecond(total);
+        return guidance;
+    }
+    //搜索查看咨询
+    public ObjectAndString<List<Guidance>, Integer> viewLikeConsultation(Integer userId, Integer guidanceStatus, String like){
+        ObjectAndString<List<Guidance>,Integer> guidance=new ObjectAndString<>();
+        List<Guidance> guidanceList=new ArrayList<>();
+        //HashMap<String, Object> map = new HashMap<>();
+        //map.put("user_id",userId);
+        //map.put("guidance_status", guidanceStatus);
+        QueryWrapper qw=new QueryWrapper();
+        //qw.allEq(map,false);
+        qw.eq("user_id",userId);
+        qw.eq("guidance_status", guidanceStatus);
         List<Guidance> guidances=guidanceMapper.selectList(qw);
-       return guidances;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        for(Guidance guidance1:guidances){
+            if(dateFormat.format(guidance1.getGuidanceDate()).contains(like));
+            guidanceList.add(guidance1);
+        }
+        System.out.println("结果："+guidanceList);
+        Integer total=guidanceList.size();
+        guidance.setFirst(guidanceList);
+        guidance.setSecond(total);
+        return guidance;
     }
     //删除已回复的咨询
     public boolean delGuidance(Integer guidanceId){

@@ -5,10 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.greenheart.collect.dao.CollectMapper;
 import com.greenheart.collect.dao.InformationMapper;
-import com.greenheart.collect.dao.PictureMapper;
 import com.greenheart.collect.pojo.Collect;
 import com.greenheart.collect.pojo.Information;
-import com.greenheart.collect.pojo.Picture;
 import com.greenheart.collect.service.CollectService;
 import com.greenheart.collect.util.ObjectAndString;
 import lombok.Setter;
@@ -25,42 +23,58 @@ import java.util.List;
 public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> implements CollectService {
     private CollectMapper collectMapper;
     private InformationMapper informationMapper;
-    private PictureMapper pictureMapper;
 
     //查看收藏的资料
-    public ObjectAndString<List<Information>,List<Picture>> selectAllCollect(Integer userId){
+    public ObjectAndString<List<Information>,Integer> selectAllCollect(Integer userId,Integer pageNum){
+        Page<Collect> page=new Page<>(pageNum,3);
         QueryWrapper<Collect> qw=new QueryWrapper();
         qw.eq("user_id",userId);
-        List<Collect> collects=collectMapper.selectList(qw);
-        List<Information> informations=new ArrayList<Information>();
+        collectMapper.selectPage(page,qw);
+        List<Collect> collects=page.getRecords();
+        Integer total=(int)page.getTotal();
+        List<Information> informations=new ArrayList<>();
         for(Collect collect:collects){
             informations.add(informationMapper.selectById(collect.getInformationId()));
         }
         System.out.println(informations);
-
-        List<Picture> pPaths=new ArrayList();
-        ObjectAndString<List<Information>,List<Picture>> result=new ObjectAndString<>();
-        for(Information information:informations){
-            QueryWrapper qw1=new QueryWrapper();
-            qw1.eq("information_id",information.getInformationId());
-            pPaths.add(pictureMapper.selectOne(qw1));
-        }
+        ObjectAndString<List<Information>,Integer> result=new ObjectAndString<>();
         result.setFirst(informations);
-        result.setSecond(pPaths);
+        result.setSecond(total);
         return result;
     }
 
+    //搜索收藏的资料
+    public ObjectAndString<List<Information>, Integer> selectLikeAllCollect(Integer userId, String like){
+        QueryWrapper qw=new QueryWrapper();
+        qw.eq("user_id",userId);
+        qw.like("information_title",like);
+        List<Information> informations=informationMapper.selectList(qw);
+        Integer total=informations.size();
+        ObjectAndString<List<Information>, Integer> information=new ObjectAndString<>();
+        information.setFirst(informations);
+        information.setSecond(total);
+        return information;
+    }
     //收藏资料
     public boolean addCollect(Integer userId,Integer informationId){
-        Collect collect=new Collect();
-        collect.setUserId(userId);
-        collect.setInformationId(informationId);
-        int result=collectMapper.insert(collect);
-        if(result!=0){
-            return true;
-        }else{
+        QueryWrapper qw=new QueryWrapper();
+        qw.eq("user_id",userId);
+        qw.eq("information_id",informationId);
+        Collect oldCollect=collectMapper.selectOne(qw);
+        if(oldCollect!=null){
             return false;
+        }else {
+            Collect collect=new Collect();
+            collect.setUserId(userId);
+            collect.setInformationId(informationId);
+            int result=collectMapper.insert(collect);
+            if(result!=0){
+                return true;
+            }else{
+                return false;
+            }
         }
+
     }
     //取消收藏
     public boolean removeCollect(Integer userId,Integer informationId){

@@ -2,7 +2,7 @@ server:
   port: 9010
 spring:
   application:
-    name: greenheart—collect
+    name: greenheartcollect
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/greenheart?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true

@@ -1,0 +1,44 @@
+server:
+  port: 9012
+spring:
+  application:
+    name: greenheartweb
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:6868/eureka/
+    instance:
+      prefer-ip-address: true
+zuul:
+  restryable: true
+  routes:
+    greenheartcollect:
+      path: /collect/**
+      serviceId: greenheartcollect
+    greenheartdm:
+      path: /dm/**
+      serviceId: greenheartdm
+    greenheartnaam:
+      path: /naam/**
+      serviceId: greenheartnaam
+    greenheartpc:
+      path: /pc/**
+      serviceId: greenheartpc
+    greenheartpe:
+      path: /pe/**
+      serviceId: greenheartpe
+    greenheartpim:
+      path: /pim/**
+      serviceId: greenheartpim
+    greenheartprocess:
+      path: /process/**
+      serviceId: greenheartprocess
+    greenheartud:
+      path: /ud/**
+      serviceId: greenheartud
+    greenheartum:
+      path: /um/**
+      serviceId: greenheartum
+    greenheartuser:
+      path: /user/**
+      serviceId: greenheartuser

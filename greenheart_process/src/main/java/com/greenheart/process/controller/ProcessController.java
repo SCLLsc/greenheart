@@ -2,7 +2,6 @@ package com.greenheart.process.controller;
 
 
 import com.greenheart.process.pojo.Information;
-import com.greenheart.process.pojo.Picture;
 import com.greenheart.process.service.InformationService;
 import com.greenheart.process.util.ObjectAndString;
 import entity.JsonResult;
@@ -25,8 +24,15 @@ public class ProcessController {
     //查看所有待审核资料
     @PostMapping("/process/allNoInformation/{pageNum}/")
     public JsonResult allNoInformation(@PathVariable Integer pageNum){
-           ObjectAndString<List<Information>,List<Picture>> result= informationService.allNoInformation(pageNum);
+        ObjectAndString<List<Information>,Integer> result= informationService.allNoInformation(pageNum);
             return new JsonResult(true, StatusCode.SUCESS,"查找成功",result);
+
+    }
+    //搜索待审核资料
+    @PostMapping("/process/allLikeNoInformation/{like}/")
+    public JsonResult allLikeNoInformation(@PathVariable String like){
+        ObjectAndString<List<Information>,Integer> result= informationService.allLikeNoInformation(like);
+        return new JsonResult(true, StatusCode.SUCESS,"查找成功",result);
 
     }
     //审核资料

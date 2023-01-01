@@ -4,6 +4,7 @@ import com.greenheart.pc.pojo.Guidance;
 import com.greenheart.pc.pojo.Reply;
 import com.greenheart.pc.service.GuidanceService;
 import com.greenheart.pc.service.ReplyService;
+import com.greenheart.pc.util.ObjectAndString;
 import entity.JsonResult;
 import entity.StatusCode;
 import lombok.Setter;
@@ -39,9 +40,15 @@ public class PCController {
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",reply);
     }
     //查看咨询(待回复|已回复)
-    @PostMapping("/pc/viewconsultation/{userId}/{guidanceStatus}/")
-    public JsonResult viewConsultation(@PathVariable Integer userId,@PathVariable Integer guidanceStatus){
-        List<Guidance> guidances= guidanceService.viewConsultation(userId, guidanceStatus);
+    @PostMapping("/pc/viewconsultation/{userId}/{guidanceStatus}/{pageNum}/")
+    public JsonResult viewConsultation(@PathVariable Integer userId,@PathVariable Integer guidanceStatus,@PathVariable Integer pageNum){
+        ObjectAndString<List<Guidance>,Integer> guidances= guidanceService.viewConsultation(userId, guidanceStatus,pageNum);
+        return new JsonResult(true, StatusCode.SUCESS,"查找成功",guidances);
+    }
+    //搜索查看咨询(待回复|已回复)
+    @PostMapping("/pc/viewlikeconsultation/{userId}/{guidanceStatus}/{like}/")
+    public JsonResult viewLikeConsultation(@PathVariable Integer userId,@PathVariable Integer guidanceStatus,@PathVariable String like){
+        ObjectAndString<List<Guidance>,Integer> guidances= guidanceService.viewLikeConsultation(userId, guidanceStatus,like);
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",guidances);
     }
     //取消咨询

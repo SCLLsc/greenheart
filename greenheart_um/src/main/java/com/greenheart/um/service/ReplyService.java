@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 public interface ReplyService extends IService<Reply> {
-    default List<Guidance> viewConsultation(Integer guidanceStatus){return null;}
+    default ObjectAndString<List<Guidance>,Integer> viewConsultation(Integer guidanceStatus,Integer pageNum){return null;}
 
     default boolean pcReply(Integer guidanceId,String replyContent){return false;}
 
@@ -18,5 +18,9 @@ public interface ReplyService extends IService<Reply> {
 
     default Guidance viewOneConsultation(Integer guidanceId){return null;}
 
-    default List<User> viewAllUser(){return null;}
+    default ObjectAndString<List<User>,Integer> viewAllUser(Integer pageNum){return null;}
+
+    default ObjectAndString<List<User>, Integer> viewLikeUser(String like){return null;}
+
+    default ObjectAndString<List<Guidance>, Integer> viewLikeConsultation(Integer guidanceStatus, String like){return null;}
 }

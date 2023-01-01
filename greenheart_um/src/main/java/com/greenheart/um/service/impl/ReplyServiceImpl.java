@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.greenheart.um.dao.*;
 import com.greenheart.um.pojo.*;
 import com.greenheart.um.service.ReplyService;
+import com.greenheart.um.util.ObjectAndString;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,22 +25,62 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
     private GuidanceMapper guidanceMapper;
     private InformationMapper informationMapper;
     private MarkMapper markMapper;
-    private PictureMapper pictureMapper;
     private ReplyMapper replyMapper;
 
     //查看所有用户
-    public List<User> viewAllUser(){
+    public ObjectAndString<List<User>,Integer> viewAllUser(Integer pageNum){
+        ObjectAndString<List<User>,Integer> user=new ObjectAndString<>();
+        Page<User> page=new Page<>(pageNum,3);
         QueryWrapper qw=new QueryWrapper();
         qw.eq("role",0);
+        userMapper.selectPage(page,qw);
+        List<User> users=page.getRecords();
+        Integer total=(int)page.getTotal();
+        System.out.println(total);
+        user.setFirst(users);
+        user.setSecond(total);
+        return user;
+    }
+    //条件查询用户
+    public ObjectAndString<List<User>, Integer> viewLikeUser(String like){
+        ObjectAndString<List<User>,Integer> user=new ObjectAndString<>();
+        //Page<User> page=new Page<>(pageNum,3);
+        QueryWrapper qw=new QueryWrapper();
+        qw.eq("role",0);
+        qw.like("user_name",like);
+        //userMapper.selectPage(page,qw);
+        //List<User> users=page.getRecords();
         List<User> users=userMapper.selectList(qw);
-        return users;
+        Integer total=users.size();
+        System.out.println(total);
+        user.setFirst(users);
+        user.setSecond(total);
+        return user;
     }
     //查看咨询
-    public List<Guidance> viewConsultation(Integer guidanceStatus){
+    public ObjectAndString<List<Guidance>,Integer> viewConsultation(Integer guidanceStatus,Integer pageNum){
+        ObjectAndString<List<Guidance>,Integer> guidance=new ObjectAndString<>();
+        Page<Guidance> page=new Page<>(pageNum,3);
         QueryWrapper qw=new QueryWrapper();
         qw.eq("guidance_status", guidanceStatus);
+        guidanceMapper.selectPage(page,qw);
+        List<Guidance> guidances=page.getRecords();
+        Integer total=(int)page.getTotal();
+        guidance.setFirst(guidances);
+        guidance.setSecond(total);
+        return guidance;
+    }
+    //条件查看咨询
+    public ObjectAndString<List<Guidance>, Integer> viewLikeConsultation(Integer guidanceStatus, String like){
+        ObjectAndString<List<Guidance>,Integer> guidance=new ObjectAndString<>();
+        QueryWrapper qw=new QueryWrapper();
+        qw.eq("guidance_status", guidanceStatus);
+        qw.like("guidance_date",like);
         List<Guidance> guidances=guidanceMapper.selectList(qw);
-        return guidances;
+        Integer total=guidances.size();
+        guidance.setFirst(guidances);
+        guidance.setSecond(total);
+        return guidance;
     }
     //查看单个咨询未回复内容
     public Guidance viewOneConsultation(Integer guidanceId){
@@ -69,48 +110,53 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
         qw.eq("user_id",userId);
         List<Information> informations=informationMapper.selectList(qw);//自己上传的资料
         System.out.println(informations);
-        List<Integer> iIds=new ArrayList();//资料的Id
-        for (Information information :informations){
-            iIds.add(information.getInformationId());
-        }
-        System.out.println(iIds);
-        //根据Id删除上传的资料、资料相关的图片、和收藏记录
-        for (Integer informationId:iIds){
-            QueryWrapper qw1=new QueryWrapper();
-            qw1.eq("information_id",informationId);
-            List<Collect> collects=collectMapper.selectList(qw1);
-            System.out.println(collects);
-            if(collects!=null){
-                List<Integer> cIds=new ArrayList<Integer>();
-                for(Collect collect :collects ){
-                    cIds.add(collect.getCollectId());
+        if(informations.size()!=0){
+            List<Integer> iIds=new ArrayList();//资料的Id
+            for (Information information :informations){
+                iIds.add(information.getInformationId());
+            }
+            System.out.println(iIds);
+
+            //根据Id删除上传的资料、和收藏记录
+            for (Integer informationId:iIds){
+                QueryWrapper qw1=new QueryWrapper();
+                qw1.eq("information_id",informationId);
+                List<Collect> collects=collectMapper.selectList(qw1);
+                System.out.println(collects);
+                if(collects!=null){
+                    List<Integer> cIds=new ArrayList<>();
+                    for(Collect collect :collects ){
+                        //cIds.add(collect.getCollectId());
+                        collectMapper.deleteById(collect.getCollectId());
+                    }
+                    //int r11=collectMapper.deleteBatchIds(cIds);
+                    int r22=informationMapper.deleteById(informationId);
+                }else {
+                    int r11=informationMapper.deleteById(informationId);
                 }
-                QueryWrapper qw2=new QueryWrapper();
-                qw2.eq("information_id",informationId);
-                int r11=collectMapper.deleteBatchIds(cIds);
-                int r22=informationMapper.deleteById(informationId);
-                int r33=pictureMapper.delete(qw2);
-            }else {
-                int r11=informationMapper.deleteById(informationId);
-                QueryWrapper qw2=new QueryWrapper();
-                qw2.eq("information_id",informationId);
-                int r33=pictureMapper.delete(qw2);
             }
         }
-        int r1=collectMapper.delete(qw);//删除自己收藏的
-        int r3=markMapper.delete(qw);//删除测试成绩
-        int r4=pictureMapper.delete(qw);//删除头像
+        List<Collect> c1=collectMapper.selectList(qw);
+        List<Mark> m1=markMapper.selectList(qw);
+        if(c1!=null){
+            int r1=collectMapper.delete(qw);//删除自己收藏的
+        }
+        if(m1!=null){
+            int r3=markMapper.delete(qw);//删除测试成绩
+        }
         //查找所有的咨询
         List<Guidance> guidanceList=guidanceMapper.selectList(qw);
         System.out.println(guidanceList);
         //删除咨询的回复
-        for(Guidance guidance : guidanceList){
-            QueryWrapper qww=new QueryWrapper();
-            Integer guidanceId=guidance.getGuidanceId();
-            qww.eq("guidance_id",guidanceId);
-            replyMapper.delete(qww);
+        if(guidanceList!=null){
+            for(Guidance guidance : guidanceList){
+                QueryWrapper qww=new QueryWrapper();
+                Integer guidanceId=guidance.getGuidanceId();
+                qww.eq("guidance_id",guidanceId);
+                replyMapper.delete(qww);
+            }
+            int r5=guidanceMapper.delete(qw);//删除咨询
         }
-        int r5=guidanceMapper.delete(qw);//删除咨询
         int r6=userMapper.deleteById(userId);//删除用户
         return true;
     }

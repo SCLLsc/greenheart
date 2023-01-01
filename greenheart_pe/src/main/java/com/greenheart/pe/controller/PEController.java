@@ -4,6 +4,7 @@ import com.greenheart.pe.pojo.Mark;
 import com.greenheart.pe.pojo.Trial;
 import com.greenheart.pe.service.MarkService;
 import com.greenheart.pe.service.TrialService;
+import com.greenheart.pe.util.ObjectAndString;
 import entity.JsonResult;
 import entity.StatusCode;
 import lombok.Setter;
@@ -34,9 +35,15 @@ public class PEController {
         }
     }
     //查看成绩
-    @PostMapping("pe/viewscore/{userId}/")
-    public JsonResult viewScore(@PathVariable Integer userId){
-        List<Mark> marks= markService.viewScore(userId);
+    @PostMapping("pe/viewscore/{userId}/{pageNum}/")
+    public JsonResult viewScore(@PathVariable Integer userId,@PathVariable Integer pageNum){
+        ObjectAndString<List<Mark>,Integer> marks= markService.viewScore(userId,pageNum);
+        return new JsonResult(true, StatusCode.SUCESS,"查找成功",marks);
+    }
+    //搜索查看成绩
+    @PostMapping("pe/viewlikescore/{userId}/{like}/")
+    public JsonResult viewLikeScore(@PathVariable Integer userId,@PathVariable String like){
+        ObjectAndString<List<Mark>,Integer> marks= markService.viewLikeScore(userId,like);
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",marks);
     }
     //删除成绩

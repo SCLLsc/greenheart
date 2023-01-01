@@ -7,4 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface InformationService extends IService<Information> {
     default String upload(ObjectAndString<Information, String> information, MultipartFile fileImage){return null;}
+
+    default String uploadInformation(Integer userId, String informationType, String informationTitle, String informationContent){return null;}
 }

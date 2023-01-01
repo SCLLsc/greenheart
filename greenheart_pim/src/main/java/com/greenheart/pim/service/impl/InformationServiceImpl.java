@@ -5,10 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.greenheart.pim.dao.CollectMapper;
 import com.greenheart.pim.dao.InformationMapper;
-import com.greenheart.pim.dao.PictureMapper;
 import com.greenheart.pim.pojo.Collect;
 import com.greenheart.pim.pojo.Information;
-import com.greenheart.pim.pojo.Picture;
 import com.greenheart.pim.service.InformationService;
 import com.greenheart.pim.util.ObjectAndString;
 import lombok.Setter;
@@ -18,9 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -29,26 +25,34 @@ import java.util.Map;
 public class InformationServiceImpl extends ServiceImpl<InformationMapper, Information> implements InformationService{
     private InformationMapper informationMapper;
     private CollectMapper collectMapper;
-    private PictureMapper pictureMapper;
+
 
     // 查看上传的资料
-    public ObjectAndString<List<Information>,List<Picture>> myInformation(String userId,Integer informationStatus){
+    public ObjectAndString<List<Information>,Integer> myInformation(String userId,Integer informationStatus,Integer pageNum){
+        Page<Information> page=new Page<>(pageNum,3);
         QueryWrapper qw=new QueryWrapper();
         qw.eq("user_id",userId);
         qw.eq("information_Status",informationStatus);
-        List<Information> informations=informationMapper.selectList(qw);
-        List<Picture> pPaths=new ArrayList();
-        ObjectAndString<List<Information>,List<Picture>> result=new ObjectAndString<>();
-        for(Information information:informations){
-            QueryWrapper qw1=new QueryWrapper();
-            qw1.eq("information_id",information.getInformationId());
-            pPaths.add(pictureMapper.selectOne(qw1));
-        }
+        informationMapper.selectPage(page,qw);
+        List<Information> informations=page.getRecords();
+        Integer total=(int)page.getTotal();
+        ObjectAndString<List<Information>,Integer> result=new ObjectAndString<>();
         result.setFirst(informations);
-        result.setSecond(pPaths);
+        result.setSecond(total);
         return result;
     }
-
+    //搜索上传的资料
+    public ObjectAndString<List<Information>, Integer> myLikeInformation(String userId, Integer informationStatus, String like){
+       QueryWrapper qw=new QueryWrapper();
+       qw.eq("information_status",informationStatus);
+       qw.like("information_title",like);
+        List<Information> informations=informationMapper.selectList(qw);
+        Integer total=informations.size();
+        ObjectAndString<List<Information>, Integer> information=new ObjectAndString<>();
+        information.setFirst(informations);
+        information.setSecond(total);
+        return information;
+    }
     // 删除上传的资料
     public boolean removeInformation(String informationId){
         QueryWrapper qw=new QueryWrapper();
@@ -63,8 +67,7 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
             qw1.eq("information_id",informationId);
             int r1=collectMapper.deleteBatchIds(cIds);
             int r2=informationMapper.deleteById(informationId);
-            int r3=pictureMapper.delete(qw1);
-            if(r1!=0&&r2!=0&&r3!=0){
+            if(r1!=0&&r2!=0){
                 return true;
             }else{
                 return false;
@@ -73,8 +76,7 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
             int r1=informationMapper.deleteById(informationId);
             QueryWrapper qw1=new QueryWrapper();
             qw1.eq("information_id",informationId);
-            int r3=pictureMapper.delete(qw1);
-            if(r1!=0&&r3!=0){
+            if(r1!=0){
                 return true;
             }else{
                 return false;

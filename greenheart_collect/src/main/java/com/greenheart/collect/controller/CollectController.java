@@ -1,8 +1,6 @@
 package com.greenheart.collect.controller;
 
-import com.greenheart.collect.pojo.Collect;
 import com.greenheart.collect.pojo.Information;
-import com.greenheart.collect.pojo.Picture;
 import com.greenheart.collect.service.CollectService;
 import com.greenheart.collect.util.ObjectAndString;
 import entity.JsonResult;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
@@ -24,9 +21,16 @@ public class CollectController {
     private CollectService collectService;
 
     //查看收藏
-    @PostMapping("/collect/{userId}/")
-    public JsonResult selectAllCollect(@PathVariable Integer userId){
-        ObjectAndString<List<Information>,List<Picture>> collects= collectService.selectAllCollect(userId);
+    @PostMapping("/collect/{userId}/{pageNum}/")
+    public JsonResult selectAllCollect(@PathVariable Integer userId,@PathVariable Integer pageNum){
+        ObjectAndString<List<Information>,Integer> collects= collectService.selectAllCollect(userId,pageNum);
+        return new JsonResult(true, StatusCode.SUCESS,"查找成功",collects);
+    }
+
+    //搜索查看收藏
+    @PostMapping("/collect/selectlikeallcollect/{userId}/{like}/")
+    public JsonResult selectLikeAllCollect(@PathVariable Integer userId,@PathVariable String like){
+        ObjectAndString<List<Information>,Integer> collects= collectService.selectLikeAllCollect(userId,like);
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",collects);
     }
     //收藏资料
@@ -35,7 +39,7 @@ public class CollectController {
         if(collectService.addCollect(userId, informationId)){
             return new JsonResult(true, StatusCode.SUCESS,"收藏成功");
         }else{
-            return new JsonResult(false, StatusCode.ERROR,"收藏失败");
+            return new JsonResult(false, StatusCode.ERROR,"已收藏,收藏失败");
         }
     }
     //取消收藏
