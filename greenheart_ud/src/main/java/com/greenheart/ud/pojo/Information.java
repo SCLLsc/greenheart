@@ -27,7 +27,7 @@ public class Information {
     @TableField(value="information_status")
     private Integer informationStatus;
     @TableField(value="upload_time")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date uploadTime;
     @TableField(value="user_id")
     private Integer userId;

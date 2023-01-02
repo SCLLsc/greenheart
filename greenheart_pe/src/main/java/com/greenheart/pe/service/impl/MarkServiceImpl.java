@@ -41,16 +41,17 @@ public class MarkServiceImpl extends ServiceImpl<MarkMapper, Mark> implements Ma
         List<Mark> markList=new ArrayList<>();
         QueryWrapper qw=new QueryWrapper();
         qw.eq("user_id",userId);
+        qw.like("trial_title",like);
         List<Mark> marks=markMapper.selectList(qw);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        System.out.println(String.valueOf(like));
-        for(Mark mark1:marks){
-            if(dateFormat.format(mark1.getMarkDate()).contains(String.valueOf(like))||dateFormat.format(mark1.getMarkDate()).equals(String.valueOf(like))){
-                markList.add(mark1);
-            }
-        }
-        Integer total=markList.size();
-        mark.setFirst(markList);
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        //System.out.println(String.valueOf(like));
+//        for(Mark mark1:marks){
+//            if(dateFormat.format(mark1.getMarkDate()).contains(String.valueOf(like))||dateFormat.format(mark1.getMarkDate()).equals(String.valueOf(like))){
+//                markList.add(mark1);
+//            }
+//        }
+        Integer total=marks.size();
+        mark.setFirst(marks);
         mark.setSecond(total);
         return mark;
     }

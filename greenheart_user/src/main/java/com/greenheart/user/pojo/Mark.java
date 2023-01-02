@@ -23,7 +23,7 @@ public class Mark {
     @TableField(value="mark_score")
     private Integer markScore;
     @TableField(value="mark_date")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date markDate;
     @TableField(value="user_id")
     private Integer userId;

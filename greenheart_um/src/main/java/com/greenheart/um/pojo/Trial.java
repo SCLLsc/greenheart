@@ -30,7 +30,7 @@ public class Trial {
     private Integer trialScore;
     private Integer cycle;
     @TableField(value="creation_time")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date creationTime;
     @TableField(value="user_id")
     private Integer userId;

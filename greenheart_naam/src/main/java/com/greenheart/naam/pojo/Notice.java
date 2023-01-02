@@ -23,10 +23,10 @@ public class Notice {
    @TableField(value="notice_content")
    private String noticeContent;
    @TableField(value="creation_time")
-   @JsonFormat(pattern = "yyyy-MM-dd")
+   @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
    private Date creationTime;
    @TableField(value="update_time")
-   @JsonFormat(pattern = "yyyy-MM-dd")
+   @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
    private Date updateTime;
 
 }

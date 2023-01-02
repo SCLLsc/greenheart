@@ -21,7 +21,7 @@ public class Guidance {
     @TableField(value="guidance_content")
     private String guidanceContent;
     @TableField(value="guidance_date")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date guidanceDate;
     @TableField(value="guidance_status")
     private Integer guidanceStatus;
