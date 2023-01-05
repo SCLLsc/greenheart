@@ -12,7 +12,7 @@ import java.util.List;
 public interface ReplyService extends IService<Reply> {
     default ObjectAndString<List<Guidance>,Integer> viewConsultation(Integer guidanceStatus,Integer pageNum){return null;}
 
-    default boolean pcReply(Integer guidanceId,String replyContent){return false;}
+    default boolean pcReply(Reply reply){return false;}
 
     default boolean cancellation(Integer userId){return false;}
 
@@ -23,4 +23,8 @@ public interface ReplyService extends IService<Reply> {
     default ObjectAndString<List<User>, Integer> viewLikeUser(String like){return null;}
 
     default ObjectAndString<List<Guidance>, Integer> viewLikeConsultation(Integer guidanceStatus, String like){return null;}
+
+    default Boolean editUserStatus(Integer userId, Integer role){return false;}
+
+    default Boolean getUserNotice(Guidance guidance){return false;}
 }

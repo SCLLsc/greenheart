@@ -27,10 +27,7 @@ public class GuidanceServiceImpl extends ServiceImpl<GuidanceMapper, Guidance> i
     private ReplyMapper replyMapper;
 
     //心理咨询
-    public boolean consult(Integer userId,String guidanceContent){
-        Guidance guidance=new Guidance();
-        guidance.setUserId(userId);
-        guidance.setGuidanceContent(guidanceContent);
+    public boolean consult(Guidance guidance){
         guidance.setGuidanceDate(new Date());
         guidance.setGuidanceStatus(0);
         int result=guidanceMapper.insert(guidance);

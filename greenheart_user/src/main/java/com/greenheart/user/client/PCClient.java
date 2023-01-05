@@ -1,16 +1,18 @@
 package com.greenheart.user.client;
 
 import com.greenheart.user.breaker.PCBreaker;
+import com.greenheart.user.pojo.Guidance;
 import entity.JsonResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "greenheartpc",fallback = PCBreaker.class)
 public interface PCClient {
     //心理咨询
-    @PostMapping("/pc/consult/{userId}/{guidanceContent}")
-    public JsonResult consult(@PathVariable("userId") Integer userId, @PathVariable("guidanceContent") String guidanceContent);
+    @PostMapping("/pc/consult/")
+    public JsonResult consult(@RequestBody Guidance guidance);
 
     //查看心理咨询回复
     @PostMapping("/pc/viewreply/{guidanceId}")

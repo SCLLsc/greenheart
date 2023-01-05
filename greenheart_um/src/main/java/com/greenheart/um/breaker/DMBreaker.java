@@ -1,6 +1,7 @@
 package com.greenheart.um.breaker;
 
 import com.greenheart.um.client.DMClient;
+import com.greenheart.um.pojo.Trial;
 import entity.JsonResult;
 import entity.StatusCode;
 import org.springframework.stereotype.Component;
@@ -53,12 +54,12 @@ public class DMBreaker implements DMClient {
     }
 
     @Override
-    public JsonResult addTrialOne(Integer userId, String trialType, String trialTitle, String trialContent, String trialAnswer, Integer trialScore, Integer cycle) {
+    public JsonResult addTrialOne(Trial trial) {
         return new JsonResult(false, StatusCode.ERROR,"dm模块服务器出错，请联系管理员！");
     }
 
     @Override
-    public JsonResult addTrial(Integer userId, String trialType, String trialTitle, Integer cycle) {
+    public JsonResult addTrial(Trial trial) {
         return new JsonResult(false, StatusCode.ERROR,"dm模块服务器出错，请联系管理员！");
     }
 
@@ -73,12 +74,12 @@ public class DMBreaker implements DMClient {
     }
 
     @Override
-    public JsonResult updateTrial(Integer trialId, String trialContent, String trialAnswer, Integer trialScore) {
+    public JsonResult updateTrial(Trial trial) {
         return new JsonResult(false, StatusCode.ERROR,"dm模块服务器出错，请联系管理员！");
     }
 
     @Override
-    public JsonResult updateTrialCycle(String trialTitle, Integer cycle) {
+    public JsonResult updateTrialCycle(Trial trial) {
         return new JsonResult(false, StatusCode.ERROR,"dm模块服务器出错，请联系管理员！");
     }
 }

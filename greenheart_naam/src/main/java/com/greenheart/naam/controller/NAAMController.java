@@ -31,9 +31,9 @@ public class NAAMController {
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",notice);
     }
     //新增公告
-    @PostMapping("/naam/addnotice/{noticeTitle}/{noticeContent}/")
-    public JsonResult addNotice(@PathVariable String noticeTitle,@PathVariable String noticeContent){
-        if(noticeService.addNotice(noticeTitle,noticeContent)){
+    @PostMapping("/naam/addnotice/")
+    public JsonResult addNotice(@RequestBody Notice notice){
+        if(noticeService.addNotice(notice)){
             return new JsonResult(true, StatusCode.SUCESS,"添加成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"添加失败");
@@ -42,9 +42,9 @@ public class NAAMController {
     }
 
     //修改公告
-    @PostMapping("/naam/updatenotice/{noticeId}/{noticeTitle}/{noticeContent}/")
-    public JsonResult updateNotice(@PathVariable Integer noticeId,@PathVariable String noticeTitle,@PathVariable String noticeContent){
-        if(noticeService.updateNotice(noticeId,noticeTitle,noticeContent)){
+    @PostMapping("/naam/updatenotice/")
+    public JsonResult updateNotice(@RequestBody Notice notice){
+        if(noticeService.updateNotice(notice)){
             return new JsonResult(true, StatusCode.SUCESS,"修改成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"修改失败");

@@ -32,7 +32,7 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
         ObjectAndString<List<User>,Integer> user=new ObjectAndString<>();
         Page<User> page=new Page<>(pageNum,3);
         QueryWrapper qw=new QueryWrapper();
-        qw.eq("role",0);
+        qw.ne("role",1);
         userMapper.selectPage(page,qw);
         List<User> users=page.getRecords();
         Integer total=(int)page.getTotal();
@@ -88,13 +88,10 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
         return guidance;
     }
     //心理咨询回复
-    public boolean pcReply(Integer guidanceId,String replyContent){
-        Guidance guidance=guidanceMapper.selectById(guidanceId);
+    public boolean pcReply(Reply reply){
+        Guidance guidance=guidanceMapper.selectById(reply.getGuidanceId());
         guidance.setGuidanceStatus(1);
         int r1=guidanceMapper.updateById(guidance);
-        Reply reply=new Reply();
-        reply.setGuidanceId(guidanceId);
-        reply.setReplyContent(replyContent);
         reply.setReplyDate(new Date());
         int r2=replyMapper.insert(reply);
         if(r1!=0&&r2!=0){
@@ -159,5 +156,27 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
         }
         int r6=userMapper.deleteById(userId);//删除用户
         return true;
+    }
+    //修改用户状态
+    public Boolean editUserStatus(Integer userId, Integer role){
+        User user=userMapper.selectById(userId);
+        user.setRole(role);
+        int r1=userMapper.updateById(user);
+        if(r1!=0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    //给用户发信息
+    public Boolean getUserNotice(Guidance guidance){
+        guidance.setGuidanceDate(new Date());
+        guidance.setGuidanceStatus(2);
+        int r1=guidanceMapper.insert(guidance);
+        if(r1!=0){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

@@ -25,9 +25,9 @@ public class PCController {
     private ReplyService replyService;
 
     //心理咨询
-    @PostMapping("/pc/consult/{userId}/{guidanceContent}")
-    public JsonResult consult(@PathVariable Integer userId,@PathVariable String guidanceContent){
-        if(guidanceService.consult(userId,guidanceContent)){
+    @PostMapping("/pc/consult/")
+    public JsonResult consult(@RequestBody Guidance guidance){
+        if(guidanceService.consult(guidance)){
             return new JsonResult(true, StatusCode.SUCESS,"咨询成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"咨询失败");

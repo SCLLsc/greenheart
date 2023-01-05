@@ -14,6 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 @FeignClient(value = "greenheartud",fallback = UDBreaker.class)
 public interface UDClient {
     //上传资料
-    @PostMapping("/ud/information/upload/{userId}/{informationType}/{informationTitle}/{informationContent}/")
-    public JsonResult uploadInformation(@PathVariable Integer userId,@PathVariable String informationType,@PathVariable String informationTitle,@PathVariable String informationContent);
+    @PostMapping("/ud/information/upload/")
+    public JsonResult uploadInformation(@RequestBody Information information);
 }

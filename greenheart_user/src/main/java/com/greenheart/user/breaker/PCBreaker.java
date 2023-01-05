@@ -1,14 +1,16 @@
 package com.greenheart.user.breaker;
 
 import com.greenheart.user.client.PCClient;
+import com.greenheart.user.pojo.Guidance;
 import entity.JsonResult;
 import entity.StatusCode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Component
 public class PCBreaker implements PCClient {
     @Override
-    public JsonResult consult(Integer userId, String guidanceContent) {
+    public JsonResult consult(Guidance guidance) {
         return new JsonResult(false, StatusCode.ERROR,"pc模块服务器出错，请联系管理员！");
     }
 

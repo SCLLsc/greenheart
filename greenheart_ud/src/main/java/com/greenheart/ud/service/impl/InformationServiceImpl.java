@@ -23,20 +23,21 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
 
 
     //上传资料
-    public String uploadInformation(Integer userId, String informationType, String informationTitle, String informationContent){
+    public String uploadInformation(Information information){
+      Integer userId=information.getUserId();
       QueryWrapper qw=new QueryWrapper();
       qw.eq("user_id",userId);
       User user=userMapper.selectOne(qw);
-      Information information=new Information();
+      Information informations=new Information();
       if(user.getRole()==0){
           information.setInformationStatus(0);
       }else {
           information.setInformationStatus(1);
       }
-      information.setUserId(userId);
-      information.setInformationType(informationType);
-      information.setInformationTitle(informationTitle);
-      information.setInformationContent(informationContent);
+//      information.setUserId(userId);
+//      information.setInformationType(informationType);
+//      information.setInformationTitle(informationTitle);
+//      information.setInformationContent(informationContent);
       information.setUploadTime(new Date());
       int result=informationMapper.insert(information);
       if(result!=0){

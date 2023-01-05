@@ -1,10 +1,10 @@
 package com.greenheart.um.controller;
 
 import com.greenheart.um.client.*;
-import com.greenheart.um.pojo.Guidance;
-import com.greenheart.um.pojo.User;
+import com.greenheart.um.pojo.*;
 import com.greenheart.um.service.ReplyService;
 import com.greenheart.um.util.ObjectAndString;
+import com.mysql.cj.protocol.x.Notice;
 import entity.JsonResult;
 import entity.StatusCode;
 import lombok.Setter;
@@ -86,15 +86,15 @@ public class UMController {
         return result;
     }
     //增加单个心理评测题目
-    @PostMapping("/um/dm/addtrialone/{userId}/{trialType}/{trialTitle}/{trialContent}/{trialAnswer}/{trialScore}/{cycle}/")
-    public JsonResult addTrialOne(@PathVariable("userId") Integer userId,@PathVariable("trialType") String trialType,@PathVariable("trialTitle") String trialTitle,@PathVariable("trialContent") String trialContent,@PathVariable("trialAnswer") String trialAnswer,@PathVariable("trialScore") Integer trialScore,@PathVariable("cycle") Integer cycle){
-        JsonResult result=dmClient.addTrialOne(userId, trialType, trialTitle, trialContent, trialAnswer, trialScore, cycle);
+    @PostMapping("/um/dm/addtrialone/")
+    public JsonResult addTrialOne(@RequestBody Trial trial){
+        JsonResult result=dmClient.addTrialOne(trial);
         return result;
     }
     //增加心理评测
-    @PostMapping("/um/dm/addtrial/{userId}/{trialType}/{trialTitle}/{cycle}/")
-    public JsonResult addTrial(@PathVariable("userId") Integer userId,@PathVariable("trialType") String trialType,@PathVariable("trialTitle") String trialTitle,@PathVariable("cycle") Integer cycle){
-        JsonResult result=dmClient.addTrial(userId, trialType, trialTitle, cycle);
+    @PostMapping("/um/dm/addtrial/")
+    public JsonResult addTrial(@RequestBody Trial trial){
+        JsonResult result=dmClient.addTrial(trial);
         return result;
     }
     //删除单个心理评测
@@ -112,16 +112,16 @@ public class UMController {
     }
 
     //修改心理评测
-    @PostMapping("/um/dm/updatetrial/{trialId}/{trialContent}/{trialAnswer}/{trialScore}")
-    public JsonResult updateTrial(@PathVariable("trialId") Integer trialId,@PathVariable("trialContent") String trialContent,@PathVariable("trialAnswer") String trialAnswer,@PathVariable("trialScore") Integer trialScore){
-        JsonResult result=dmClient.updateTrial(trialId, trialContent, trialAnswer, trialScore);
+    @PostMapping("/um/dm/updatetrial/")
+    public JsonResult updateTrial(@RequestBody Trial trial){
+        JsonResult result=dmClient.updateTrial(trial);
         return result;
     }
 
     //修改心理评测时间
-    @PostMapping("/um/dm/updatetrialcycle/{trialTitle}/{cycle}/")
-    public JsonResult updateTrialCycle(@PathVariable("trialTitle") String trialTitle,@PathVariable("cycle") Integer cycle){
-        JsonResult result=dmClient.updateTrialCycle(trialTitle, cycle);
+    @PostMapping("/um/dm/updatetrialcycle/")
+    public JsonResult updateTrialCycle(@RequestBody Trial trial){
+        JsonResult result=dmClient.updateTrialCycle(trial);
         return result;
     }
     //-----------------------------------NAAM模块-----------------------------------
@@ -139,16 +139,16 @@ public class UMController {
     }
 
     //新增公告
-    @PostMapping("/um/naam/addnotice/{noticeTitle}/{noticeContent}/")
-    public JsonResult addNotice(@PathVariable("noticeTitle") String noticeTitle,@PathVariable("noticeContent") String noticeContent){
-        JsonResult result=naamClient.addNotice(noticeTitle, noticeContent);
+    @PostMapping("/um/naam/addnotice/")
+    public JsonResult addNotice(@RequestBody Notice notice){
+        JsonResult result=naamClient.addNotice(notice);
         return result;
     }
 
     //修改公告
-    @PostMapping("/um/naam/updatenotice/{noticeId}/{noticeTitle}/{noticeContent}/")
-    public JsonResult updateNotice(@PathVariable("noticeId") Integer noticeId,@PathVariable("noticeTitle") String noticeTitle,@PathVariable("noticeContent") String noticeContent){
-        JsonResult result=naamClient.updateNotice(noticeId, noticeTitle, noticeContent);
+    @PostMapping("/um/naam/updatenotice/")
+    public JsonResult updateNotice(@RequestBody Notice notice){
+        JsonResult result=naamClient.updateNotice(notice);
         return result;
     }
 
@@ -195,9 +195,9 @@ public class UMController {
 
     //---------------------------------UD模块-----------------------------------
     //上传资料
-    @PostMapping("/um/ud/information/upload/{userId}/{informationType}/{informationTitle}/{informationContent}/")
-    public JsonResult uploadInformation(@PathVariable Integer userId,@PathVariable String informationType,@PathVariable String informationTitle,@PathVariable String informationContent){
-        JsonResult result=udClient.uploadInformation(userId, informationType, informationTitle, informationContent);
+    @PostMapping("/um/ud/information/upload/")
+    public JsonResult uploadInformation(@RequestBody Information information){
+        JsonResult result=udClient.uploadInformation(information);
         return result;
     }
     //---------------------------------User模块-----------------------------------
@@ -258,9 +258,9 @@ public class UMController {
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",guidance);
     }
     //心理咨询回复
-    @PostMapping("/um/pcreply/{guidanceId}/{replyContent}/")
-    public JsonResult pcReply(@PathVariable Integer guidanceId,@PathVariable String replyContent){
-        if(replyService.pcReply(guidanceId,replyContent)){
+    @PostMapping("/um/pcreply/")
+    public JsonResult pcReply(@RequestBody Reply reply){
+        if(replyService.pcReply(reply)){
             return new JsonResult(true, StatusCode.SUCESS,"回复成功");
         }else {
             return new JsonResult(false, StatusCode.ERROR,"回复失败");
@@ -272,6 +272,18 @@ public class UMController {
     public JsonResult removeUser(@PathVariable Integer userId){
         replyService.cancellation(userId);
         return new JsonResult(true, StatusCode.SUCESS,"注销成功");
+    }
+    //修改用户状态
+    @PostMapping("um/edituserstatus/{userId}/{role}/")
+    public JsonResult editUserStatus(@PathVariable Integer userId,@PathVariable Integer role){
+        replyService.editUserStatus(userId,role);
+        return new JsonResult(true, StatusCode.SUCESS,"修改成功");
+    }
+    //给用户发通知
+    @PostMapping("um/getusernotice/")
+    public JsonResult getUserNotice(@RequestBody Guidance guidance){
+        replyService.getUserNotice(guidance);
+        return new JsonResult(true, StatusCode.SUCESS,"发送成功");
     }
 
 }

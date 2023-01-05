@@ -1,10 +1,12 @@
 package com.greenheart.user.client;
 
 import com.greenheart.user.breaker.DMBreaker;
+import com.greenheart.user.pojo.Trial;
 import entity.JsonResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "greenheartdm",fallback = DMBreaker.class)
 public interface DMClient {
@@ -45,12 +47,12 @@ public interface DMClient {
     public JsonResult selectTrialById(@PathVariable("trialId") Integer trialId);
 
     //增加单个心理评测题目
-    @PostMapping("/dm/addtrialone/{userId}/{trialType}/{trialTitle}/{trialContent}/{trialAnswer}/{trialScore}/{cycle}/")
-    public JsonResult addTrialOne(@PathVariable("userId") Integer userId,@PathVariable("trialType") String trialType,@PathVariable("trialTitle") String trialTitle,@PathVariable("trialContent") String trialContent,@PathVariable("trialAnswer") String trialAnswer,@PathVariable("trialScore") Integer trialScore,@PathVariable("cycle") Integer cycle);
+    @PostMapping("/dm/addtrialone/")
+    public JsonResult addTrialOne(@RequestBody Trial trial);
 
     //增加心理评测
-    @PostMapping("/dm/addtrial/{userId}/{trialType}/{trialTitle}/{cycle}/")
-    public JsonResult addTrial(@PathVariable("userId") Integer userId,@PathVariable("trialType") String trialType,@PathVariable("trialTitle") String trialTitle,@PathVariable("cycle") Integer cycle);
+    @PostMapping("/dm/addtrial/")
+    public JsonResult addTrial(@RequestBody Trial trial);
 
     //删除单个心理评测
     @PostMapping("/dm/removetrialbyid/{trialId}/")
@@ -61,10 +63,10 @@ public interface DMClient {
     public JsonResult removeTrial(@PathVariable("trialTitle") String trialTitle);
 
     //修改心理评测
-    @PostMapping("/dm/updatetrial/{trialId}/{trialContent}/{trialAnswer}/{trialScore}")
-    public JsonResult updateTrial(@PathVariable("trialId") Integer trialId,@PathVariable("trialContent") String trialContent,@PathVariable("trialAnswer") String trialAnswer,@PathVariable("trialScore") Integer trialScore);
+    @PostMapping("/dm/updatetrial/")
+    public JsonResult updateTrial(@RequestBody Trial trial);
 
     //修改心理评测时间
-    @PostMapping("/dm/updatetrialcycle/{trialTitle}/{cycle}/")
-    public JsonResult updateTrialCycle(@PathVariable("trialTitle") String trialTitle,@PathVariable("cycle") Integer cycle);
+    @PostMapping("/dm/updatetrialcycle/")
+    public JsonResult updateTrialCycle(@RequestBody Trial trial);
 }

@@ -88,9 +88,9 @@ public class DMController {
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",trial);
     }
     //增加单个心理评测题目
-    @PostMapping("/dm/addtrialone/{userId}/{trialType}/{trialTitle}/{trialContent}/{trialAnswer}/{trialScore}/{cycle}/")
-    public JsonResult addTrialOne(@PathVariable Integer userId,@PathVariable String trialType,@PathVariable String trialTitle,@PathVariable String trialContent,@PathVariable String trialAnswer,@PathVariable Integer trialScore,@PathVariable Integer cycle){
-        if(trialService.addTrialOne(userId,trialType,trialTitle,trialContent,trialAnswer,trialScore,cycle)){
+    @PostMapping("/dm/addtrialone/")
+    public JsonResult addTrialOne(@RequestBody Trial trial){
+        if(trialService.addTrialOne(trial)){
             return new JsonResult(true, StatusCode.SUCESS,"增加成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"增加失败");
@@ -98,9 +98,9 @@ public class DMController {
     }
 
     //增加心理评测
-    @PostMapping("/dm/addtrial/{userId}/{trialType}/{trialTitle}/{cycle}/")
-    public JsonResult addTrial(@PathVariable Integer userId,@PathVariable String trialType,@PathVariable String trialTitle,@PathVariable Integer cycle){
-        if(trialService.addTrial(userId,trialType,trialTitle,cycle)){
+    @PostMapping("/dm/addtrial/")
+    public JsonResult addTrial(@RequestBody Trial trial){
+        if(trialService.addTrial(trial)){
             return new JsonResult(true, StatusCode.SUCESS,"增加成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"增加失败");
@@ -128,18 +128,18 @@ public class DMController {
     }
 
    //修改心理评测
-   @PostMapping("/dm/updatetrial/{trialId}/{trialContent}/{trialAnswer}/{trialScore}")
-   public JsonResult updateTrial(@PathVariable Integer trialId,@PathVariable String trialContent,@PathVariable String trialAnswer,@PathVariable Integer trialScore){
-       if(trialService.updateTrial(trialId,trialContent,trialAnswer,trialScore)){
+   @PostMapping("/dm/updatetrial/")
+   public JsonResult updateTrial(@RequestBody Trial trial){
+       if(trialService.updateTrial(trial)){
            return new JsonResult(true, StatusCode.SUCESS,"修改成功");
        }else{
            return new JsonResult(false, StatusCode.ERROR,"修改失败");
        }
    }
     //修改心理评测时间
-    @PostMapping("/dm/updatetrialcycle/{trialTitle}/{cycle}/")
-    public JsonResult updateTrialCycle(@PathVariable String trialTitle,@PathVariable Integer cycle){
-        if(trialService.updateTrialCycle(trialTitle,cycle)){
+    @PostMapping("/dm/updatetrialcycle/")
+    public JsonResult updateTrialCycle(@RequestBody Trial trial){
+        if(trialService.updateTrialCycle(trial)){
             return new JsonResult(true, StatusCode.SUCESS,"修改成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"修改失败");

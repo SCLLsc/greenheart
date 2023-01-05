@@ -31,7 +31,7 @@ public class EmailUtil {
         account.setAuth(true);
         account.setFrom("1628311741@qq.com");
         account.setUser("1628311741@qq.com");
-        account.setPass("bbnjyeqcjrxwfcha");
+        account.setPass("ebxwenqazlacdecc");
         //POP3/SMTP服务bbnjyeqcjrxwfcha
         //IMAP/SMTP服务ehwwfavaunhpbcec
     }

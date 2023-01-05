@@ -2,6 +2,8 @@ package com.greenheart.user.controller;
 
 import cn.hutool.core.lang.UUID;
 import com.greenheart.user.client.*;
+import com.greenheart.user.pojo.Guidance;
+import com.greenheart.user.pojo.Information;
 import com.greenheart.user.pojo.User;
 import com.greenheart.user.service.UserService;
 import com.greenheart.user.util.EmailUtil;
@@ -117,9 +119,9 @@ public class UserController {
     }
 //-----------------------------------PC模块-----------------------------------
     //心理咨询
-    @PostMapping("/user/pc/consult/{userId}/{guidanceContent}")
-    public JsonResult consult(@PathVariable("userId") Integer userId, @PathVariable("guidanceContent") String guidanceContent){
-        JsonResult result=pcClient.consult(userId, guidanceContent);
+    @PostMapping("/user/pc/consult/")
+    public JsonResult consult(@RequestBody Guidance guidance){
+        JsonResult result=pcClient.consult(guidance);
         return result;
     }
     //查看心理咨询回复
@@ -193,16 +195,16 @@ public class UserController {
     }
 
     // 修改个人信息
-    @PostMapping("/user/pim/updatemyself/{userId}/{userName}/{email}/")
-    public JsonResult updateMyself(@PathVariable("userId") Integer userId,@PathVariable("userName") String userName,@PathVariable("email") String email){
-        JsonResult result=pimClient.updateMyself(userId, userName, email);
+    @PostMapping("/user/pim/updatemyself/")
+    public JsonResult updateMyself(@RequestBody User user){
+        JsonResult result=pimClient.updateMyself(user);
         return result;
     }
 
     // 修改密码
-    @PostMapping("/user/pim/updatemypwd/{userId}/{userPwd}/")
-    public JsonResult updateMyPwd(@PathVariable("userId") Integer userId,@PathVariable("userPwd") String userPwd){
-        JsonResult result=pimClient.updateMyPwd(userId,userPwd);
+    @PostMapping("/user/pim/updatemypwd/")
+    public JsonResult updateMyPwd(@RequestBody User user){
+        JsonResult result=pimClient.updateMyPwd(user);
         return result;
     }
 
@@ -219,11 +221,32 @@ public class UserController {
         JsonResult result=pimClient.removeInformation(informationId);
         return result;
     }
+
+    //查看通知
+    @PostMapping("/pim/viewmyconsultation/{userId}/{guidanceStatus}/{pageNum}/")
+    public JsonResult viewMyConsultation(@PathVariable("userId") Integer userId,@PathVariable("guidanceStatus") Integer guidanceStatus,@PathVariable("pageNum") Integer pageNum){
+        JsonResult result=pimClient.viewMyConsultation(userId, guidanceStatus, pageNum);
+        return result;
+    }
+
+    //删除通知
+    @PostMapping("/pim/delmyconsultation/{guidanceId}/")
+    public JsonResult delConsultation(@PathVariable("userId") Integer guidanceId){
+        JsonResult result=pimClient.delConsultation(guidanceId);
+        return result;
+    }
+
+    //条件查询用户咨询
+    @PostMapping("/pim/viewlikemyconsultation/{userId}/{guidanceStatus}/{like}/")
+    public JsonResult viewLikeMyConsultation(@PathVariable("userId") Integer userId,@PathVariable("guidanceStatus") Integer guidanceStatus,@PathVariable("like") String like){
+        JsonResult result=pimClient.viewLikeMyConsultation(userId, guidanceStatus, like);
+        return result;
+    }
 //---------------------------------UD模块-----------------------------------
     //上传资料
-    @PostMapping("/user/ud/information/upload/{userId}/{informationType}/{informationTitle}/{informationContent}/")
-    public JsonResult uploadInformation(@PathVariable Integer userId,@PathVariable String informationType,@PathVariable String informationTitle,@PathVariable String informationContent){
-        JsonResult result=udClient.uploadInformation(userId, informationType, informationTitle, informationContent);
+    @PostMapping("/user/ud/information/upload/")
+    public JsonResult uploadInformation(@RequestBody Information information){
+        JsonResult result=udClient.uploadInformation(  information);
         return result;
     }
 //---------------------------------UM模块-----------------------------------

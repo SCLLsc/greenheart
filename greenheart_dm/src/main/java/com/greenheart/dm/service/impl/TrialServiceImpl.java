@@ -100,16 +100,11 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
         return trial;
     }
     //增加心理评测
-    public boolean addTrial(Integer userId,String trialType, String trialTitle, Integer cycle){
-         Trial trial=new Trial();
-         trial.setTrialType(trialType);
-         trial.setTrialTitle(trialTitle);
-         trial.setCycle(cycle);
+    public boolean addTrial(Trial trial){
          trial.setTrialContent("无");
          trial.setTrialAnswer("无");
          trial.setCreationTime(new Date());
          trial.setTrialScore(0);
-         trial.setUserId(userId);
         if(trialMapper.insert(trial)==1){
             return true;
         }else{
@@ -117,16 +112,8 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
          }
     }
     //增加单个心理评测
-    public boolean addTrialOne(Integer userId,String trialType,String trialTitle, String trialContent, String trialAnswer,Integer trialScore,Integer cycle){
-         Trial trial=new Trial();
-         trial.setUserId(userId);
-         trial.setTrialTitle(trialTitle);
-         trial.setTrialScore(trialScore);
-         trial.setTrialAnswer(trialAnswer);
-         trial.setTrialContent(trialContent);
-         trial.setTrialType(trialType);
+    public boolean addTrialOne(Trial trial){
          trial.setCreationTime(new Date());
-         trial.setCycle(cycle);
         int result=trialMapper.insert(trial);
         if(result!=0){
             return true;
@@ -146,11 +133,11 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
         }
     }
     //修改心理评测
-    public boolean updateTrial(Integer trialId, String trialContent, String trialAnswer,Integer trialScore){
-      Trial oldTrial=trialMapper.selectById(trialId);
-      oldTrial.setTrialAnswer(trialAnswer);
-      oldTrial.setTrialContent(trialContent);
-      oldTrial.setTrialScore(trialScore);
+    public boolean updateTrial(Trial trial){
+      Trial oldTrial=trialMapper.selectById(trial.getTrialId());
+      oldTrial.setTrialAnswer(trial.getTrialAnswer());
+      oldTrial.setTrialContent(trial.getTrialContent());
+      oldTrial.setTrialScore(trial.getTrialScore());
       int result=trialMapper.updateById(oldTrial);
         if(result!=0){
             return true;
@@ -159,15 +146,15 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
         }
     }
     //修改评测时间
-    public boolean updateTrialCycle(String trialTitle, Integer cycle){
+    public boolean updateTrialCycle(Trial trial){
          QueryWrapper qw=new QueryWrapper();
-         qw.eq("trial_title",trialTitle);
+         qw.eq("trial_title",trial.getTrialTitle());
          List<Trial> trials=trialMapper.selectList(qw);
          System.out.println(trials);
          int result=0;
-         for (Trial trial:trials){
-             trial.setCycle(cycle);
-             result+=trialMapper.updateById(trial);
+         for (Trial trial1:trials){
+             trial1.setCycle(trial.getCycle());
+             result+=trialMapper.updateById(trial1);
          }
         System.out.println(result);
          if(result!=0){

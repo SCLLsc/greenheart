@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface GuidanceService extends IService<Guidance> {
 
-    default boolean consult(Integer userId,String guidanceContent){return false;}
+    default boolean consult(Guidance guidance){return false;}
 
     default ObjectAndString<List<Guidance>,Integer> viewConsultation(Integer userId, Integer guidanceStatus, Integer pageNum){return null;}
 

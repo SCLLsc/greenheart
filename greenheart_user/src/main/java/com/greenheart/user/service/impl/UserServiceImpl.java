@@ -52,12 +52,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
        MD5Util md5=new MD5Util();
        User user = query().eq("email", email).one();
        if(user!=null){
-           String decryptPwd =md5.convertMD5(user.getUserPwd());//MD5解密
-           if(decryptPwd.equals(userPwd)){
-               result.setFirst(user);
-               result.setSecond("登陆成功");
+           if(user.getRole()==2){
+               result.setSecond("您的账户已被禁用，请邮箱联系管理员！");
            }else {
-               result.setSecond("密码错误");
+               String decryptPwd =md5.convertMD5(user.getUserPwd());//MD5解密
+               if(decryptPwd.equals(userPwd)){
+                   result.setFirst(user);
+                   result.setSecond("登陆成功");
+               }else {
+                   result.setSecond("密码错误");
+               }
            }
        }else {
            result.setSecond("邮箱错误或尚未注册");

@@ -18,19 +18,19 @@ import org.springframework.web.multipart.MultipartFile;
 public class UDController {
     private InformationService informationService;
 
+//    //上传资料
+//    @PostMapping("/ud/information/upload/")
+//    public JsonResult upload(@RequestBody ObjectAndString<Information,String> information, MultipartFile fileImage){
+//        if(informationService.upload(information,fileImage).equals("资料上传成功")){
+//            return new JsonResult(true, StatusCode.SUCESS,"上传成功");
+//        }else {
+//            return new JsonResult(false, StatusCode.ERROR,"上传失败");
+//        }
+//    }
     //上传资料
     @PostMapping("/ud/information/upload/")
-    public JsonResult upload(@RequestBody ObjectAndString<Information,String> information, MultipartFile fileImage){
-        if(informationService.upload(information,fileImage).equals("资料上传成功")){
-            return new JsonResult(true, StatusCode.SUCESS,"上传成功");
-        }else {
-            return new JsonResult(false, StatusCode.ERROR,"上传失败");
-        }
-    }
-    //上传资料
-    @PostMapping("/ud/information/upload/{userId}/{informationType}/{informationTitle}/{informationContent}/")
-    public JsonResult uploadInformation(@PathVariable Integer userId, @PathVariable String informationType, @PathVariable String informationTitle, @PathVariable String informationContent){
-        if(informationService.uploadInformation(userId,informationType,informationTitle,informationContent).equals("资料上传成功")){
+    public JsonResult uploadInformation(@RequestBody Information information){
+        if(informationService.uploadInformation(information).equals("资料上传成功")){
             return new JsonResult(true, StatusCode.SUCESS,"上传成功");
         }else {
             return new JsonResult(false, StatusCode.ERROR,"上传失败");

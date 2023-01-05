@@ -54,33 +54,36 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
         return information;
     }
     // 删除上传的资料
-    public boolean removeInformation(String informationId){
-        QueryWrapper qw=new QueryWrapper();
-        qw.eq("information_id",informationId);
-        List<Collect> collects=collectMapper.selectList(qw);
-        if(collects!=null){
-            List cIds=new ArrayList();
-            for(Collect collect :collects ){
-                cIds.add(collect.getCollectId());
+    public boolean removeInformation(Integer informationId){
+        Information information=informationMapper.selectById(informationId);
+        if(information.getInformationStatus()==0){
+            informationMapper.deleteById(informationId);
+            return true;
+        }else if(information.getInformationStatus()==1){
+            QueryWrapper qw=new QueryWrapper();
+            qw.eq("information_id",informationId);
+            List<Collect> collects=collectMapper.selectList(qw);
+            if(collects!=null){
+                for(Collect collect :collects ){
+                    collectMapper.deleteById(collect.getCollectId());
+                }
+                int r2=informationMapper.deleteById(informationId);
+                if(r2!=0){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else {
+                int r1=informationMapper.deleteById(informationId);
+                if(r1!=0){
+                    return true;
+                }else{
+                    return false;
+                }
             }
-            QueryWrapper qw1=new QueryWrapper();
-            qw1.eq("information_id",informationId);
-            int r1=collectMapper.deleteBatchIds(cIds);
-            int r2=informationMapper.deleteById(informationId);
-            if(r1!=0&&r2!=0){
-                return true;
-            }else{
-                return false;
-            }
-        }else {
-            int r1=informationMapper.deleteById(informationId);
-            QueryWrapper qw1=new QueryWrapper();
-            qw1.eq("information_id",informationId);
-            if(r1!=0){
-                return true;
-            }else{
-                return false;
-            }
+        }else{
+            informationMapper.deleteById(informationId);
+            return true;
         }
     }
 }
