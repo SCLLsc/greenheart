@@ -125,7 +125,7 @@ public class UserController {
         return result;
     }
     //查看心理咨询回复
-    @PostMapping("/user/pc/viewreply/{guidanceId}")
+    @PostMapping("/user/pc/viewreply/{guidanceId}/")
     public JsonResult viewReply(@PathVariable("guidanceId") Integer guidanceId){
        JsonResult result=pcClient.viewReply(guidanceId);
        return result;
@@ -143,7 +143,7 @@ public class UserController {
         return result;
     }
     //取消咨询
-    @PostMapping("/user/pc/removeguidance/{guidanceId}")
+    @PostMapping("/user/pc/removeguidance/{guidanceId}/")
     public JsonResult removeGuidance(@PathVariable("guidanceId") Integer guidanceId){
         JsonResult result=pcClient.removeGuidance(guidanceId);
         return result;
@@ -223,21 +223,21 @@ public class UserController {
     }
 
     //查看通知
-    @PostMapping("/pim/viewmyconsultation/{userId}/{guidanceStatus}/{pageNum}/")
+    @PostMapping("/user/pim/viewmyconsultation/{userId}/{guidanceStatus}/{pageNum}/")
     public JsonResult viewMyConsultation(@PathVariable("userId") Integer userId,@PathVariable("guidanceStatus") Integer guidanceStatus,@PathVariable("pageNum") Integer pageNum){
         JsonResult result=pimClient.viewMyConsultation(userId, guidanceStatus, pageNum);
         return result;
     }
 
     //删除通知
-    @PostMapping("/pim/delmyconsultation/{guidanceId}/")
+    @PostMapping("/user/pim/delmyconsultation/{guidanceId}/")
     public JsonResult delConsultation(@PathVariable("userId") Integer guidanceId){
         JsonResult result=pimClient.delConsultation(guidanceId);
         return result;
     }
 
     //条件查询用户咨询
-    @PostMapping("/pim/viewlikemyconsultation/{userId}/{guidanceStatus}/{like}/")
+    @PostMapping("/user/pim/viewlikemyconsultation/{userId}/{guidanceStatus}/{like}/")
     public JsonResult viewLikeMyConsultation(@PathVariable("userId") Integer userId,@PathVariable("guidanceStatus") Integer guidanceStatus,@PathVariable("like") String like){
         JsonResult result=pimClient.viewLikeMyConsultation(userId, guidanceStatus, like);
         return result;

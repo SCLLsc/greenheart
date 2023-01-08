@@ -47,7 +47,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
          user1.setUserName(user.getUserName());
       }
       if(user.getEmail()!=null){
-         user1.setEmail(user.getEmail());
+         QueryWrapper qw=new QueryWrapper();
+         qw.eq("email",user.getEmail());
+         User oldUser=userMapper.selectOne(qw);
+         if(oldUser.getUserId()!=user.getUserId()){
+            return false;
+         }else {
+            user1.setEmail(user.getEmail());
+         }
       }
 
       if(userMapper.updateById(user1)==1){

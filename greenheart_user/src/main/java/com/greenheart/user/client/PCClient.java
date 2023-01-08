@@ -15,7 +15,7 @@ public interface PCClient {
     public JsonResult consult(@RequestBody Guidance guidance);
 
     //查看心理咨询回复
-    @PostMapping("/pc/viewreply/{guidanceId}")
+    @PostMapping("/pc/viewreply/{guidanceId}/")
     public JsonResult viewReply(@PathVariable("guidanceId") Integer guidanceId);
 
     //查看咨询(待回复|已回复)
@@ -27,7 +27,7 @@ public interface PCClient {
     public JsonResult viewLikeConsultation(@PathVariable("userId") Integer userId,@PathVariable("guidanceStatus") Integer guidanceStatus,@PathVariable("like") String like);
 
     //取消咨询
-    @PostMapping("/pc/removeguidance/{guidanceId}")
+    @PostMapping("/pc/removeguidance/{guidanceId}/")
     public JsonResult removeGuidance(@PathVariable("guidanceId") Integer guidanceId);
 
     //删除已回复的咨询

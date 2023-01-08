@@ -43,7 +43,7 @@ public class PIMController {
         if(userService.updateMyself(user)){
             return new JsonResult(true, StatusCode.SUCESS,"修改成功");
         }else{
-            return new JsonResult(false, StatusCode.ERROR,"修改失败");
+            return new JsonResult(false, StatusCode.ERROR,"该邮箱已注册，修改失败");
         }
     }
     // 修改密码
