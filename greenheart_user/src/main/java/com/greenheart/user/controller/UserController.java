@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-
+import java.util.List;
 
 
 @RestController
@@ -157,8 +157,8 @@ public class UserController {
 //---------------------------------PE模块-----------------------------------
     //心理评测
     @PostMapping("/user/pe/evaluating/{userId}/{trialTitle}/{markScore}/")
-    public JsonResult evaluating(@PathVariable("userId") Integer userId, @PathVariable("trialTitle") String trialTitle, @PathVariable("markScore") Integer markScore){
-        JsonResult result=peClient.evaluating(userId, trialTitle, markScore);
+    public JsonResult evaluating(@PathVariable("userId") Integer userId, @PathVariable("trialTitle") String trialTitle, @RequestBody List<String> answers){
+        JsonResult result=peClient.evaluating(userId, trialTitle, answers);
         return result;
     }
     //查看成绩

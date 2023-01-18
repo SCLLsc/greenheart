@@ -41,13 +41,43 @@ public class ReplyServiceImpl extends ServiceImpl<ReplyMapper, Reply> implements
         user.setSecond(total);
         return user;
     }
+    //查看所有管理员
+    public ObjectAndString<List<User>,Integer> viewMdAllUser(Integer pageNum){
+        ObjectAndString<List<User>,Integer> user=new ObjectAndString<>();
+        Page<User> page=new Page<>(pageNum,3);
+        QueryWrapper qw=new QueryWrapper();
+        qw.eq("role",1);
+        userMapper.selectPage(page,qw);
+        List<User> users=page.getRecords();
+        Integer total=(int)page.getTotal();
+        System.out.println(total);
+        user.setFirst(users);
+        user.setSecond(total);
+        return user;
+    }
     //条件查询用户
     public ObjectAndString<List<User>, Integer> viewLikeUser(String like){
         ObjectAndString<List<User>,Integer> user=new ObjectAndString<>();
         //Page<User> page=new Page<>(pageNum,3);
         QueryWrapper qw=new QueryWrapper();
         qw.eq("role",0);
-        qw.like("user_name",like);
+        qw.like("user_id",like);
+        //userMapper.selectPage(page,qw);
+        //List<User> users=page.getRecords();
+        List<User> users=userMapper.selectList(qw);
+        Integer total=users.size();
+        System.out.println(total);
+        user.setFirst(users);
+        user.setSecond(total);
+        return user;
+    }
+    //条件查询管理员
+    public ObjectAndString<List<User>, Integer> viewLikeMdUser(String like){
+        ObjectAndString<List<User>,Integer> user=new ObjectAndString<>();
+        //Page<User> page=new Page<>(pageNum,3);
+        QueryWrapper qw=new QueryWrapper();
+        qw.eq("role",1);
+        qw.like("user_id",like);
         //userMapper.selectPage(page,qw);
         //List<User> users=page.getRecords();
         List<User> users=userMapper.selectList(qw);

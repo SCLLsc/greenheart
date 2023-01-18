@@ -3,10 +3,13 @@ package com.greenheart.um.client;
 import com.greenheart.um.breaker.DMBreaker;
 import com.greenheart.um.pojo.Trial;
 import entity.JsonResult;
+import entity.StatusCode;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @FeignClient(value = "greenheartdm",fallback = DMBreaker.class)
 public interface DMClient {
@@ -47,12 +50,12 @@ public interface DMClient {
     public JsonResult selectTrialById(@PathVariable("trialId") Integer trialId);
 
     //增加单个心理评测题目
-    @PostMapping("/dm/addtrialone/")
-    public JsonResult addTrialOne(@RequestBody Trial trial);
+    @PostMapping("/dm/addtrialone/{trialNum}/")
+    public JsonResult addTrialOne(@PathVariable("trialNum") Integer trialNum,@RequestBody Trial trial);
 
     //增加心理评测
-    @PostMapping("/dm/addtrial/")
-    public JsonResult addTrial(@RequestBody Trial trial);
+    @PostMapping("/dm/addtrial/{userId}/")
+    public JsonResult addTrial(@PathVariable("userId") Integer userId,@RequestBody Trial trial);
 
     //删除单个心理评测
     @PostMapping("/dm/removetrialbyid/{trialId}/")
@@ -69,4 +72,8 @@ public interface DMClient {
     //修改心理评测时间
     @PostMapping("/dm/updatetrialcycle/")
     public JsonResult updateTrialCycle(@RequestBody Trial trial);
+
+    //修改Excel心理评测
+    @PostMapping("/dm/updatealltrial/")
+    public JsonResult updateAllTrial(@RequestBody List<Trial> trial);
 }

@@ -10,12 +10,10 @@ import entity.StatusCode;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -25,9 +23,9 @@ public class PEController {
     private MarkService markService;
 
     //心理评测
-    @PostMapping("/pe/evaluating/{userId}/{trialTitle}/{markScore}/")
-    public JsonResult evaluating(@PathVariable Integer userId,@PathVariable String trialTitle, @PathVariable Integer markScore){
-        boolean flag=trialService.evaluating(userId,trialTitle,markScore);
+    @PostMapping("/pe/evaluating/{userId}/{trialTitle}/")
+    public JsonResult evaluating(@PathVariable Integer userId,@PathVariable String trialTitle, @RequestBody List<String[]> answers){
+        boolean flag=trialService.evaluating(userId,trialTitle,answers);
         if(flag){
             return new JsonResult(true, StatusCode.SUCESS,"完成测试");
         }else {

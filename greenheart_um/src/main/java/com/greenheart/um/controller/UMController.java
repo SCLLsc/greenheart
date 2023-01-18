@@ -86,15 +86,15 @@ public class UMController {
         return result;
     }
     //增加单个心理评测题目
-    @PostMapping("/um/dm/addtrialone/")
-    public JsonResult addTrialOne(@RequestBody Trial trial){
-        JsonResult result=dmClient.addTrialOne(trial);
+    @PostMapping("/um/dm/addtrialone/{trialNum}/")
+    public JsonResult addTrialOne(@PathVariable Integer trialNum,@RequestBody Trial trial){
+        JsonResult result=dmClient.addTrialOne(trialNum,trial);
         return result;
     }
     //增加心理评测
-    @PostMapping("/um/dm/addtrial/")
-    public JsonResult addTrial(@RequestBody Trial trial){
-        JsonResult result=dmClient.addTrial(trial);
+    @PostMapping("/um/dm/addtrial/{userId}/")
+    public JsonResult addTrial(@PathVariable Integer userId,@RequestBody Trial trial){
+        JsonResult result=dmClient.addTrial(userId,trial);
         return result;
     }
     //删除单个心理评测
@@ -122,6 +122,12 @@ public class UMController {
     @PostMapping("/um/dm/updatetrialcycle/")
     public JsonResult updateTrialCycle(@RequestBody Trial trial){
         JsonResult result=dmClient.updateTrialCycle(trial);
+        return result;
+    }
+    //修改Excel心理评测
+    @PostMapping("/dm/updatealltrial/")
+    public JsonResult updateAllTrial(@RequestBody List<Trial> trial){
+        JsonResult result=dmClient.updateAllTrial(trial);
         return result;
     }
     //-----------------------------------NAAM模块-----------------------------------
@@ -225,10 +231,30 @@ public class UMController {
             return new JsonResult(false, StatusCode.ERROR,"查找失败");
         }
     }
+    //查看所有管理员
+    @PostMapping("/um/viewallmduser/{pageNum}/")
+    public JsonResult viewMdAllUser(@PathVariable Integer pageNum){
+        ObjectAndString<List<User>,Integer> users= replyService.viewMdAllUser(pageNum);
+        if(users!=null){
+            return new JsonResult(true, StatusCode.SUCESS,"查找成功",users);
+        }else {
+            return new JsonResult(false, StatusCode.ERROR,"查找失败");
+        }
+    }
     //条件查询用户
     @PostMapping("/um/viewlikeuser/{like}/")
     public JsonResult viewLikeUser(@PathVariable String like){
         ObjectAndString<List<User>,Integer> users= replyService.viewLikeUser(like);
+        if(users!=null){
+            return new JsonResult(true, StatusCode.SUCESS,"查找成功",users);
+        }else {
+            return new JsonResult(false, StatusCode.ERROR,"查找失败");
+        }
+    }
+    //条件查询管理员
+    @PostMapping("/um/viewlikemduser/{like}/")
+    public JsonResult viewLikeMdUser(@PathVariable String like){
+        ObjectAndString<List<User>,Integer> users= replyService.viewLikeMdUser(like);
         if(users!=null){
             return new JsonResult(true, StatusCode.SUCESS,"查找成功",users);
         }else {

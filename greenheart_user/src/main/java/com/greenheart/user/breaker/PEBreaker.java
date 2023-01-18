@@ -5,10 +5,12 @@ import entity.JsonResult;
 import entity.StatusCode;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class PEBreaker implements PEClient {
     @Override
-    public JsonResult evaluating(Integer userId, String trialTitle, Integer markScore) {
+    public JsonResult evaluating(Integer userId, String trialTitle, List<String> answers) {
         return new JsonResult(false, StatusCode.ERROR,"pe模块服务器出错，请联系管理员！");
     }
 

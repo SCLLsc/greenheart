@@ -6,6 +6,8 @@ import entity.JsonResult;
 import entity.StatusCode;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class DMBreaker implements DMClient {
     @Override
@@ -54,12 +56,12 @@ public class DMBreaker implements DMClient {
     }
 
     @Override
-    public JsonResult addTrialOne(Trial trial) {
+    public JsonResult addTrialOne(Integer trialNum,Trial trial) {
         return new JsonResult(false, StatusCode.ERROR,"dm模块服务器出错，请联系管理员！");
     }
 
     @Override
-    public JsonResult addTrial(Trial trial) {
+    public JsonResult addTrial(Integer userId,Trial trial) {
         return new JsonResult(false, StatusCode.ERROR,"dm模块服务器出错，请联系管理员！");
     }
 
@@ -80,6 +82,11 @@ public class DMBreaker implements DMClient {
 
     @Override
     public JsonResult updateTrialCycle(Trial trial) {
+        return new JsonResult(false, StatusCode.ERROR,"dm模块服务器出错，请联系管理员！");
+    }
+
+    @Override
+    public JsonResult updateAllTrial(List<Trial> trial) {
         return new JsonResult(false, StatusCode.ERROR,"dm模块服务器出错，请联系管理员！");
     }
 }

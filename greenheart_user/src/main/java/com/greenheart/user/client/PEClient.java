@@ -5,12 +5,15 @@ import entity.JsonResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @FeignClient(value = "greenheartpe",fallback = PEBreaker.class)
 public interface PEClient {
     //心理评测
-    @PostMapping("/pe/evaluating/{userId}/{trialTitle}/{markScore}/")
-    public JsonResult evaluating(@PathVariable("userId") Integer userId, @PathVariable("trialTitle") String trialTitle, @PathVariable("markScore") Integer markScore);
+    @PostMapping("/pe/evaluating/{userId}/{trialTitle}/")
+    public JsonResult evaluating(@PathVariable("userId") Integer userId, @PathVariable("trialTitle") String trialTitle,  @RequestBody List<String> answers);
 
     //查看成绩
     @PostMapping("pe/viewscore/{userId}/{pageNum}/")

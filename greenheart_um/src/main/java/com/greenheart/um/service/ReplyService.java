@@ -27,4 +27,8 @@ public interface ReplyService extends IService<Reply> {
     default Boolean editUserStatus(Integer userId, Integer role){return false;}
 
     default Boolean getUserNotice(Guidance guidance){return false;}
+
+    default ObjectAndString<List<User>, Integer> viewMdAllUser(Integer pageNum){return null;}
+
+    default ObjectAndString<List<User>, Integer> viewLikeMdUser(String like){return null;}
 }

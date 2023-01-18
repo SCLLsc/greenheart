@@ -1,5 +1,6 @@
 package com.greenheart.dm.controller;
 
+import com.greenheart.dm.pojo.Answer;
 import com.greenheart.dm.pojo.Information;
 import com.greenheart.dm.pojo.Trial;
 import com.greenheart.dm.service.InformationService;
@@ -88,9 +89,9 @@ public class DMController {
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",trial);
     }
     //增加单个心理评测题目
-    @PostMapping("/dm/addtrialone/")
-    public JsonResult addTrialOne(@RequestBody Trial trial){
-        if(trialService.addTrialOne(trial)){
+    @PostMapping("/dm/addtrialone/{trialNum}/")
+    public JsonResult addTrialOne(@PathVariable Integer trialNum,@RequestBody Trial trial){
+        if(trialService.addTrialOne(trialNum,trial)){
             return new JsonResult(true, StatusCode.SUCESS,"增加成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"增加失败");
@@ -98,18 +99,18 @@ public class DMController {
     }
 
     //增加心理评测
-    @PostMapping("/dm/addtrial/")
-    public JsonResult addTrial(@RequestBody Trial trial){
-        if(trialService.addTrial(trial)){
+    @PostMapping("/dm/addtrial/{userId}/")
+    public JsonResult addTrial(@PathVariable Integer userId,@RequestBody Trial trial){
+        if(trialService.addTrial(userId,trial)){
             return new JsonResult(true, StatusCode.SUCESS,"增加成功");
         }else{
-            return new JsonResult(false, StatusCode.ERROR,"增加失败");
+            return new JsonResult(false, StatusCode.ERROR,"该试卷已存在，增加失败");
         }
     }
     //删除单个心理评测
     @PostMapping("/dm/removetrialbyid/{trialId}/")
     public JsonResult removeTrialById(@PathVariable Integer trialId){
-        boolean flag=trialService.removeById(trialId);
+        boolean flag=trialService.removeOneById(trialId);
         if(flag){
             return new JsonResult(true, StatusCode.SUCESS,"删除成功");
         }else{
@@ -136,6 +137,71 @@ public class DMController {
            return new JsonResult(false, StatusCode.ERROR,"修改失败");
        }
    }
+    //添加Excel心理评测
+    @PostMapping("/dm/addexcelalltrial/{userId}/")
+    public JsonResult addExcelAllTrial(@PathVariable Integer userId,@RequestBody List<Trial> trial){
+        if(trialService.addExcelAllTrial(userId,trial)){
+            return new JsonResult(true, StatusCode.SUCESS,"上传题目成功");
+        }else{
+            return new JsonResult(false, StatusCode.ERROR,"上传题目失败，该标题试卷已存在，请修改后在上传");
+        }
+    }
+    //添加Excel心理评测答案
+    @PostMapping("/dm/addallanswer/{trialTitle}/")
+    public JsonResult addAllAnswer(@PathVariable String trialTitle,@RequestBody List<Answer> Answer){
+        if(trialService.addAllAnswer(trialTitle,Answer)){
+            return new JsonResult(true, StatusCode.SUCESS,"上传答案成功");
+        }else{
+            return new JsonResult(false, StatusCode.ERROR,"已存在答案，上传答案失败，请点击修改答案导入修改后的文件");
+        }
+    }
+    //修改Excel心理评测
+    @PostMapping("/dm/updatealltrial/")
+    public JsonResult updateAllTrial(@RequestBody List<Trial> trial){
+        if(trialService.updateAllTrial(trial)){
+            return new JsonResult(true, StatusCode.SUCESS,"修改成功");
+        }else{
+            return new JsonResult(false, StatusCode.ERROR,"修改失败");
+        }
+    }
+    //查找单个答案
+    @PostMapping("/dm/findanswerbyid/{trialId}/")
+    public JsonResult findAnswerById(@PathVariable Integer trialId){
+        Answer answer= trialService.findAnswerById(trialId);
+        if(answer!=null){
+            return new JsonResult(true, StatusCode.SUCESS,"查找成功",answer);
+        }else{
+            return new JsonResult(false, StatusCode.ERROR,"查找失败");
+        }
+    }
+    //查找所有答案
+    @PostMapping("/dm/findallanswer/{trialTitle}/")
+    public JsonResult findAllAnswer(@PathVariable String trialTitle){
+        List<Answer> answer= trialService.findAllAnswer(trialTitle);
+        if(answer.size()!=0){
+            return new JsonResult(true, StatusCode.SUCESS,"查找成功",answer);
+        }else{
+            return new JsonResult(false, StatusCode.ERROR,"查找失败");
+        }
+    }
+    //修改单个答案
+    @PostMapping("/dm/updateanswer/")
+    public JsonResult updateAnswer(@RequestBody Answer answer){
+        if(trialService.updateAnswer(answer)){
+            return new JsonResult(true, StatusCode.SUCESS,"修改成功");
+        }else{
+            return new JsonResult(false, StatusCode.ERROR,"修改失败");
+        }
+    }
+    //修改所有答案
+    @PostMapping("/dm/updateallanswer/{trialTitle}/")
+    public JsonResult updateAllAnswer(@PathVariable String trialTitle,@RequestBody List<Answer> answer){
+        if(trialService.updateAllAnswer(trialTitle,answer)){
+            return new JsonResult(true, StatusCode.SUCESS,"修改成功");
+        }else{
+            return new JsonResult(false, StatusCode.ERROR,"还未导入过答案,修改失败");
+        }
+    }
     //修改心理评测时间
     @PostMapping("/dm/updatetrialcycle/")
     public JsonResult updateTrialCycle(@RequestBody Trial trial){
