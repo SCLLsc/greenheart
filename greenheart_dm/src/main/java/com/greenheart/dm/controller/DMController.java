@@ -44,13 +44,22 @@ public class DMController {
     @PostMapping("/dm/selectalltrial/{pageNum}/")
     public JsonResult selectAllTrial(@PathVariable Integer pageNum){
         ObjectAndString<List<Trial>,Integer> trials=trialService.selectAllTrial(pageNum);
-        return new JsonResult(true, StatusCode.SUCESS,"查找成功",trials);
+        if(trials!=null){
+            return new JsonResult(true, StatusCode.SUCESS,"查找成功",trials);
+        }else {
+            return new JsonResult(true, StatusCode.SUCESS,"暂无数据");
+        }
+
     }
     //搜索查看心理评测
     @PostMapping("/dm/selectlikealltrial/{like}/")
     public JsonResult selectLikeAllTrial(@PathVariable String like){
         ObjectAndString<List<Trial>,Integer> trials=trialService.selectLikeAllTrial(like);
+        if(trials!=null){
         return new JsonResult(true, StatusCode.SUCESS,"查找成功",trials);
+        }else {
+            return new JsonResult(true, StatusCode.SUCESS,"暂无数据");
+        }
     }
     //查看心理评测试题
     @PostMapping("/dm/selecttrialbytitle/{trialTitle}/{pageNum}/")
@@ -147,12 +156,12 @@ public class DMController {
         }
     }
     //添加Excel心理评测答案
-    @PostMapping("/dm/addallanswer/{trialTitle}/")
-    public JsonResult addAllAnswer(@PathVariable String trialTitle,@RequestBody List<Answer> Answer){
-        if(trialService.addAllAnswer(trialTitle,Answer)){
+    @PostMapping("/dm/addallanswer/")
+    public JsonResult addAllAnswer(@RequestBody List<Answer> answer){
+        if(trialService.addAllAnswer(answer)){
             return new JsonResult(true, StatusCode.SUCESS,"上传答案成功");
         }else{
-            return new JsonResult(false, StatusCode.ERROR,"已存在答案，上传答案失败，请点击修改答案导入修改后的文件");
+            return new JsonResult(false, StatusCode.ERROR,"上传题目失败，该标题试卷已存在，请修改后在上传");
         }
     }
     //修改Excel心理评测
@@ -194,9 +203,9 @@ public class DMController {
         }
     }
     //修改所有答案
-    @PostMapping("/dm/updateallanswer/{trialTitle}/")
-    public JsonResult updateAllAnswer(@PathVariable String trialTitle,@RequestBody List<Answer> answer){
-        if(trialService.updateAllAnswer(trialTitle,answer)){
+    @PostMapping("/dm/updateallanswer/")
+    public JsonResult updateAllAnswer(@RequestBody List<Answer> answer){
+        if(trialService.updateAllAnswer(answer)){
             return new JsonResult(true, StatusCode.SUCESS,"修改成功");
         }else{
             return new JsonResult(false, StatusCode.ERROR,"还未导入过答案,修改失败");

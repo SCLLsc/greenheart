@@ -37,11 +37,15 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
          qw.groupBy("trial_title");
          trialMapper.selectPage(page,qw);
          List<Trial> trials=page.getRecords();
-         Integer total=(int)page.getTotal();
-         System.out.println("111111"+trials.get(0).getTrialTitle().contains("b"));
-         trial.setFirst(trials);
-         trial.setSecond(total);
-         return trial;
+         if(trials.size()!=0){
+             Integer total=(int)page.getTotal();
+             System.out.println("111111"+trials.get(0).getTrialTitle().contains("b"));
+             trial.setFirst(trials);
+             trial.setSecond(total);
+             return trial;
+         }else {
+             return null;
+         }
      }
      //搜索查看心理评测
     public ObjectAndString<List<Trial>, Integer> selectLikeAllTrial(String like){
@@ -49,18 +53,23 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
         QueryWrapper<Trial> qw=new QueryWrapper();
         qw.groupBy("trial_title");
         List<Trial> trials=trialMapper.selectList(qw);
-        List<Trial> trialList=new ArrayList<>();
-        for(Trial trial1:trials){
-            if(trial1.getTrialTitle().contains(String.valueOf(like))){
-                trialList.add(trial1);
+        if(trials.size()!=0){
+            List<Trial> trialList=new ArrayList<>();
+            for(Trial trial1:trials){
+                if(trial1.getTrialTitle().contains(String.valueOf(like))){
+                    trialList.add(trial1);
+                }
             }
+            System.out.println("111111"+trials.get(0).getTrialTitle().contains(like));
+            System.out.println("222222"+trialList);
+            Integer total=trialList.size();
+            trial.setFirst(trialList);
+            trial.setSecond(total);
+            return trial;
+        }else {
+            return null;
         }
-        System.out.println("111111"+trials.get(0).getTrialTitle().contains(like));
-        System.out.println("222222"+trialList);
-        Integer total=trialList.size();
-        trial.setFirst(trialList);
-        trial.setSecond(total);
-        return trial;
+
     }
     //查看评测内题目
     public ObjectAndString<List<Trial>,Integer> selectTrialByTitle(String trialTitle,Integer pageNum){
@@ -126,13 +135,26 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
         QueryWrapper qw=new QueryWrapper();
         qw.eq("trial_title",trial.get(0).getTrialTitle());
         List<Trial> trialList=trialMapper.selectList(qw);
-        for(int i=0;i<trial.size();i++){
-            Trial trial1=trialList.get(i);
-            trial1.setTrialContent(trial.get(i).getTrialContent());
+
+        if(trial.size()<trialList.size()){
+            //int gap=trialList.size()-trial.size();
+            for (int i=trial.size();i<trialList.size();i++){
+                trialMapper.deleteById(trialList.get(i).getTrialId());
+            }
+        }else if(trial.size()>trialList.size()){
+            //int gap=trial.size()-trialList.size();
+            for (int i=trialList.size();i<trial.size();i++){
+                trialMapper.insert(trial.get(i));
+            }
+        }else if(trial.size()==trialList.size()){
+            for(int i=0;i<trial.size();i++){
+                Trial trial1=trialList.get(i);
+                trial1.setTrialContent(trial.get(i).getTrialContent());
 //            trial1.setTrialAnswer(trial.get(i).getTrialAnswer());
-            trial1.setTrialScore(trial.get(i).getTrialScore());
-            trial1.setCycle(trial.get(i).getCycle());
-            trialMapper.updateById(trial1);
+                trial1.setTrialScore(trial.get(i).getTrialScore());
+                trial1.setCycle(trial.get(i).getCycle());
+                trialMapper.updateById(trial1);
+            }
         }
          return true;
     }
@@ -162,10 +184,10 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
         }
     }
     //增加Execl心理评测的答案
-    public boolean addAllAnswer(String trialTitle,List<Answer> answer){
+    public boolean addAllAnswer(List<Answer> answer){
         System.out.println("myexcelanswer:"+answer);
         QueryWrapper qw=new QueryWrapper();
-        qw.eq("trial_title",trialTitle);
+        qw.eq("trial_title",answer.get(0).getTrialTitle());
         List<Trial> trialList=trialMapper.selectList(qw);
         System.out.println("所有的测试题目"+trialList);
 
@@ -178,11 +200,10 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
                     trial.setTrialAnswer("true");
                     trialMapper.updateById(trial);
                 }
-
                 for (int i = 0; i < answer.size(); i++) {
                     Answer answer1 = new Answer();
                     answer1.setTrialId(trialList.get(i).getTrialId());
-                    answer1.setTrialContent(answer.get(i).getTrialContent());
+                    answer1.setTrialTitle(answer.get(i).getTrialTitle());
                     answer1.setAnswerA(answer.get(i).getAnswerA());
                     answer1.setAnswerB(answer.get(i).getAnswerB());
                     answer1.setAnswerC(answer.get(i).getAnswerC());
@@ -283,7 +304,7 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
       qw.eq("trial_id",trial.getTrialId());
       Answer answer=answerMapper.selectOne(qw);
       if(answer!=null){
-          answer.setTrialContent(trial.getTrialContent());
+          //answer.setTrialContent(trial.getTrialContent());
           int r1=answerMapper.updateById(answer);
           Trial oldTrial=trialMapper.selectById(trial.getTrialId());
           oldTrial.setTrialAnswer(trial.getTrialAnswer());
@@ -338,26 +359,43 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
         }
     }
     //修改所有答案
-    public boolean updateAllAnswer(String trialTitle, List<Answer> answer){
+    public boolean updateAllAnswer(List<Answer> answer){
         QueryWrapper qw=new QueryWrapper();
-        qw.eq("trial_title",trialTitle);
+        qw.eq("trial_title",answer.get(0).getTrialTitle());
         List<Trial> trialList=trialMapper.selectList(qw);
         if(trialList.get(0).getTrialAnswer().equals("true")){
-            for(int i=0;i<trialList.size();i++){
-                QueryWrapper qw1=new QueryWrapper();
-                qw1.eq("trial_id",trialList.get(i).getTrialId());
-                Answer answer1=answerMapper.selectOne(qw1);
-                answer1.setTrialContent(answer.get(i).getTrialContent());
-                answer1.setAnswerA(answer.get(i).getAnswerA());
-                answer1.setAnswerB(answer.get(i).getAnswerB());
-                answer1.setAnswerC(answer.get(i).getAnswerC());
-                answer1.setAnswerD(answer.get(i).getAnswerD());
-                answer1.setScoreA(answer.get(i).getScoreA());
-                answer1.setScoreB(answer.get(i).getScoreB());
-                answer1.setScoreC(answer.get(i).getScoreC());
-                answer1.setScoreD(answer.get(i).getScoreD());
-                answerMapper.updateById(answer1);
+            if(answer.size()<trialList.size()){
+                int gap=trialList.size()-answer.size();
+                System.out.println("相差的数量"+gap);
+                for (int i=answer.size();i<trialList.size();i++){
+                    System.out.println("要删除的Id"+trialList.get(i).getTrialId());
+                    QueryWrapper qw1=new QueryWrapper();
+                    qw1.eq("trial_id",trialList.get(i).getTrialId());
+                    answerMapper.delete(qw1);
+                }
+            }else if(answer.size()>trialList.size()){
+                //int gap=trialList.size()-answer.size();
+                for (int i=trialList.size();i<answer.size();i++){
+                    answerMapper.insert(answer.get(i));
+                }
+            }else if(answer.size()==trialList.size()){
+                for(int i=0;i<trialList.size();i++){
+                    QueryWrapper qw1=new QueryWrapper();
+                    qw1.eq("trial_id",trialList.get(i).getTrialId());
+                    Answer answer1=answerMapper.selectOne(qw1);
+                    //answer1.setTrialContent(answer.get(i).getTrialContent());
+                    answer1.setAnswerA(answer.get(i).getAnswerA());
+                    answer1.setAnswerB(answer.get(i).getAnswerB());
+                    answer1.setAnswerC(answer.get(i).getAnswerC());
+                    answer1.setAnswerD(answer.get(i).getAnswerD());
+                    answer1.setScoreA(answer.get(i).getScoreA());
+                    answer1.setScoreB(answer.get(i).getScoreB());
+                    answer1.setScoreC(answer.get(i).getScoreC());
+                    answer1.setScoreD(answer.get(i).getScoreD());
+                    answerMapper.updateById(answer1);
+                }
             }
+
             return true;
         }else {
             return false;

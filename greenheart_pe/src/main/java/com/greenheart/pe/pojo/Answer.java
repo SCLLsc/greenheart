@@ -17,8 +17,8 @@ public class Answer {
     private Integer answerId;
     @TableField(value="trial_id")
     private Integer trialId;
-    @TableField(value="trial_content")
-    private String trialContent;
+    @TableField(value="trial_title")
+    private String trialTitle;
     @TableField(value="answer_a")
     private String answerA;
     @TableField(value="answer_b")

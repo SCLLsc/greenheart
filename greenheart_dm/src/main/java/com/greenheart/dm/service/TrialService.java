@@ -32,7 +32,7 @@ public interface TrialService extends IService<Trial> {
 
     default boolean addExcelAllTrial(Integer userId,List<Trial> trial){return false;}
 
-    default boolean addAllAnswer(String trialTitle, List<Answer> answer){return false;}
+    default boolean addAllAnswer(List<Answer> answer){return false;}
 
     default boolean removeOneById(Integer trialId){return false;}
 
@@ -42,5 +42,5 @@ public interface TrialService extends IService<Trial> {
 
     default boolean updateAnswer(Answer answer){return false;}
 
-    default boolean updateAllAnswer(String trialTitle, List<Answer> answer){return false;}
+    default boolean updateAllAnswer(List<Answer> answer){return false;}
 }
