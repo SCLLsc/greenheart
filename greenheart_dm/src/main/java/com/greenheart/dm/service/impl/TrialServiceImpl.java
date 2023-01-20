@@ -74,7 +74,7 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
     //查看评测内题目
     public ObjectAndString<List<Trial>,Integer> selectTrialByTitle(String trialTitle,Integer pageNum){
         ObjectAndString<List<Trial>,Integer> trial=new ObjectAndString<>();
-        Page<Trial> page=new Page<>(pageNum,3);
+        Page<Trial> page=new Page<>(pageNum,10);
         QueryWrapper qw=new QueryWrapper();
         qw.eq("trial_title",trialTitle);
         trialMapper.selectPage(page,qw);
@@ -131,32 +131,47 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
     }
     //修改Execl心理评测
     public boolean updateAllTrial(List<Trial> trial){
-        System.out.println("myexcel:"+trial);
-        QueryWrapper qw=new QueryWrapper();
-        qw.eq("trial_title",trial.get(0).getTrialTitle());
-        List<Trial> trialList=trialMapper.selectList(qw);
+         if(trial.size()!=0){
+             System.out.println("myexcel:"+trial);
+             QueryWrapper qw=new QueryWrapper();
+             qw.eq("trial_title",trial.get(0).getTrialTitle());
+             List<Trial> trialList=trialMapper.selectList(qw);
 
-        if(trial.size()<trialList.size()){
-            //int gap=trialList.size()-trial.size();
-            for (int i=trial.size();i<trialList.size();i++){
-                trialMapper.deleteById(trialList.get(i).getTrialId());
-            }
-        }else if(trial.size()>trialList.size()){
-            //int gap=trial.size()-trialList.size();
-            for (int i=trialList.size();i<trial.size();i++){
-                trialMapper.insert(trial.get(i));
-            }
-        }else if(trial.size()==trialList.size()){
-            for(int i=0;i<trial.size();i++){
-                Trial trial1=trialList.get(i);
-                trial1.setTrialContent(trial.get(i).getTrialContent());
+             if(trial.size()<trialList.size()){
+                 //int gap=trialList.size()-trial.size();
+                 for (int i=trial.size();i<trialList.size();i++){
+                     trialMapper.deleteById(trialList.get(i).getTrialId());
+                 }
+             }else if(trial.size()>trialList.size()){
+                 //int gap=trial.size()-trialList.size();
+                 for (int i=trialList.size();i<trial.size();i++){
+                     trial.get(i).setTrialAnswer("true");
+                     trial.get(i).setCreationTime(trialList.get(0).getCreationTime());
+                     trial.get(i).setUserId(trialList.get(0).getUserId());
+                     trialMapper.insert(trial.get(i));
+                 }
+                 List<Trial> trialsList=trialMapper.selectList(qw);
+                 List<Answer> answerList=answerMapper.selectList(qw);
+                 for(int i=trialList.size();i<trial.size();i++){
+                     Trial trial1=trialsList.get(i);
+                     answerList.get(i).setTrialId(trial1.getTrialId());
+                     answerMapper.updateById(answerList.get(i));
+                 }
+             }else if(trial.size()==trialList.size()){
+                 for(int i=0;i<trial.size();i++){
+                     Trial trial1=trialList.get(i);
+                     trial1.setTrialContent(trial.get(i).getTrialContent());
 //            trial1.setTrialAnswer(trial.get(i).getTrialAnswer());
-                trial1.setTrialScore(trial.get(i).getTrialScore());
-                trial1.setCycle(trial.get(i).getCycle());
-                trialMapper.updateById(trial1);
-            }
-        }
-         return true;
+                     trial1.setTrialScore(trial.get(i).getTrialScore());
+                     trial1.setCycle(trial.get(i).getCycle());
+                     trialMapper.updateById(trial1);
+                 }
+             }
+             return true;
+         }else {
+             return false;
+         }
+
     }
     //增加Execl心理评测
     public boolean addExcelAllTrial(Integer userId,List<Trial> trial){
@@ -360,46 +375,51 @@ public class TrialServiceImpl extends ServiceImpl<TrialMapper, Trial> implements
     }
     //修改所有答案
     public boolean updateAllAnswer(List<Answer> answer){
-        QueryWrapper qw=new QueryWrapper();
-        qw.eq("trial_title",answer.get(0).getTrialTitle());
-        List<Trial> trialList=trialMapper.selectList(qw);
-        if(trialList.get(0).getTrialAnswer().equals("true")){
-            if(answer.size()<trialList.size()){
-                int gap=trialList.size()-answer.size();
-                System.out.println("相差的数量"+gap);
-                for (int i=answer.size();i<trialList.size();i++){
-                    System.out.println("要删除的Id"+trialList.get(i).getTrialId());
-                    QueryWrapper qw1=new QueryWrapper();
-                    qw1.eq("trial_id",trialList.get(i).getTrialId());
-                    answerMapper.delete(qw1);
+        if(answer.size()!=0){
+            QueryWrapper qw=new QueryWrapper();
+            qw.eq("trial_title",answer.get(0).getTrialTitle());
+            List<Trial> trialList=trialMapper.selectList(qw);
+            if(trialList.get(0).getTrialAnswer().equals("true")){
+                if(answer.size()<trialList.size()){
+                    int gap=trialList.size()-answer.size();
+                    System.out.println("相差的数量"+gap);
+                    for (int i=answer.size();i<trialList.size();i++){
+                        System.out.println("要删除的Id"+trialList.get(i).getTrialId());
+                        QueryWrapper qw1=new QueryWrapper();
+                        qw1.eq("trial_id",trialList.get(i).getTrialId());
+                        answerMapper.delete(qw1);
+                    }
+                }else if(answer.size()>trialList.size()){
+                    //int gap=trialList.size()-answer.size();
+                    for (int i=trialList.size();i<answer.size();i++){
+                        answerMapper.insert(answer.get(i));
+                    }
+                }else if(answer.size()==trialList.size()){
+                    for(int i=0;i<trialList.size();i++){
+                        QueryWrapper qw1=new QueryWrapper();
+                        qw1.eq("trial_id",trialList.get(i).getTrialId());
+                        Answer answer1=answerMapper.selectOne(qw1);
+                        //answer1.setTrialContent(answer.get(i).getTrialContent());
+                        answer1.setAnswerA(answer.get(i).getAnswerA());
+                        answer1.setAnswerB(answer.get(i).getAnswerB());
+                        answer1.setAnswerC(answer.get(i).getAnswerC());
+                        answer1.setAnswerD(answer.get(i).getAnswerD());
+                        answer1.setScoreA(answer.get(i).getScoreA());
+                        answer1.setScoreB(answer.get(i).getScoreB());
+                        answer1.setScoreC(answer.get(i).getScoreC());
+                        answer1.setScoreD(answer.get(i).getScoreD());
+                        answerMapper.updateById(answer1);
+                    }
                 }
-            }else if(answer.size()>trialList.size()){
-                //int gap=trialList.size()-answer.size();
-                for (int i=trialList.size();i<answer.size();i++){
-                    answerMapper.insert(answer.get(i));
-                }
-            }else if(answer.size()==trialList.size()){
-                for(int i=0;i<trialList.size();i++){
-                    QueryWrapper qw1=new QueryWrapper();
-                    qw1.eq("trial_id",trialList.get(i).getTrialId());
-                    Answer answer1=answerMapper.selectOne(qw1);
-                    //answer1.setTrialContent(answer.get(i).getTrialContent());
-                    answer1.setAnswerA(answer.get(i).getAnswerA());
-                    answer1.setAnswerB(answer.get(i).getAnswerB());
-                    answer1.setAnswerC(answer.get(i).getAnswerC());
-                    answer1.setAnswerD(answer.get(i).getAnswerD());
-                    answer1.setScoreA(answer.get(i).getScoreA());
-                    answer1.setScoreB(answer.get(i).getScoreB());
-                    answer1.setScoreC(answer.get(i).getScoreC());
-                    answer1.setScoreD(answer.get(i).getScoreD());
-                    answerMapper.updateById(answer1);
-                }
-            }
 
-            return true;
+                return true;
+            }else {
+                return false;
+            }
         }else {
             return false;
         }
+
 
     }
 

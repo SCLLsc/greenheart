@@ -170,7 +170,7 @@ public class DMController {
         if(trialService.updateAllTrial(trial)){
             return new JsonResult(true, StatusCode.SUCESS,"修改成功");
         }else{
-            return new JsonResult(false, StatusCode.ERROR,"修改失败");
+            return new JsonResult(false, StatusCode.ERROR,"文件无数据，修改失败");
         }
     }
     //查找单个答案
@@ -208,7 +208,7 @@ public class DMController {
         if(trialService.updateAllAnswer(answer)){
             return new JsonResult(true, StatusCode.SUCESS,"修改成功");
         }else{
-            return new JsonResult(false, StatusCode.ERROR,"还未导入过答案,修改失败");
+            return new JsonResult(false, StatusCode.ERROR,"上传文件的有误,修改失败");
         }
     }
     //修改心理评测时间
